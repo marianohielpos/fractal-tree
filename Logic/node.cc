@@ -42,3 +42,9 @@ Node::setDescription(std::string foreignDescription){
 Node::getDescription(){
     return description;
 }
+
+Node::Node(int* id, char* cod, char* description){
+    this.id = id;
+    this.cod = cod;
+    this.description = description;
+}

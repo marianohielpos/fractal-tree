@@ -17,22 +17,54 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+ /* File description:
+ *  First fourth blocks: Metadata, bytemap and (Need to think)
+ *  Other blocks: Data
+ *  Free space control: Bytemap, representing the percentage of use of each block
+ *  Each register is finished with a EOF
+ *
+ */
+
+
+
 #include "file.h"
-#include "<iostream>"
+#include <iostream>
+#include <fstream>
+#define DATABASE_NAME "./database.bin"
+#define BLOCK_SIZE 4096 //The size of blocks in bytes
+#define REGISTER_SIZE 4096 //The max size of the register in bytes
+
+using namespace std;
+
+int main () {
+
+  ofstream myfile;
+
+  std::streampos size;
+  int blockPosition;
+  char * memblock;
+
+  myfile.open (DATABASE_NAME, ios::out | ios::in | ios::binary);
+
+  if ( !myfile.is_open() ) {
+      //TODO: Handle error
+
+      return;
+  }
+
+    size = REGISTER_SIZE;
+    memblock = new char [size];
+    file.seekg (0, blockPosition);
+    file.read (memblock, size);
+    file.close();
+
+    cout << "the entire file content is in memory";
+
+    delete[] memblock;
 
 
-class File
-{
-public:
 
-
-
-
-protected:
-
-    std::string path;
-
-private:
-
-
-};
+  myfile.close();
+  return 0;
+}

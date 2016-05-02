@@ -43,11 +43,13 @@ public:
 
     char* getDescription();
 
+    Node(int* id, char* cod, char* description);
+
 protected:
 
-    int id;
-    std::string cod[CODE_SIZE + 1];  //+1 for the end character
-    std::string description;
+    int* id;
+    char* cod;
+    char* description;
 
 private:
 
