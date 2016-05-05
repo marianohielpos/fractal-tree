@@ -26,45 +26,33 @@
  *
  */
 
-
-
 #include "file.h"
+#include "register.h"
+
 #include <iostream>
 #include <fstream>
-#define DATABASE_NAME "./database.bin"
-#define BLOCK_SIZE 4096 //The size of blocks in bytes
+
+#define DATABASE_NAME "./database.bin" //Need to set as a parameter
 #define REGISTER_SIZE 4096 //The max size of the register in bytes
 
-using namespace std;
+File::getRegister(uint registerNumber) {
 
-int main () {
+    int blockPosition = registerNumber * REGISTER_SIZE;
+    char* memblock;
 
-  ofstream myfile;
+    myfile.open (DATABASE_NAME, ios::out | ios::in | ios::binary);
 
-  std::streampos size;
-  int blockPosition;
-  char * memblock;
-
-  myfile.open (DATABASE_NAME, ios::out | ios::in | ios::binary);
-
-  if ( !myfile.is_open() ) {
+    if ( !myfile.is_open() ) {
       //TODO: Handle error
-
       return;
-  }
+    }
 
-    size = REGISTER_SIZE;
-    memblock = new char [size];
+    memblock = new char [REGISTER_SIZE];
     file.seekg (0, blockPosition);
-    file.read (memblock, size);
+    file.read (memblock, REGISTER_SIZE);
     file.close();
 
-    cout << "the entire file content is in memory";
+    myfile.close();
 
-    delete[] memblock;
-
-
-
-  myfile.close();
-  return 0;
+    return new Register(memblock);
 }

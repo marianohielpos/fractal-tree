@@ -17,4 +17,17 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "file.h"
+#include "Register.h"
+#include "Node.h"
+#include <iostream>
+#include <string>
+
+
+Register::Register(char* stream){
+
+    std::string str;
+
+    for(uint i = 0; stream[i] != '\0'; i++){
+        str.append(stream[i])
+    }
+}
