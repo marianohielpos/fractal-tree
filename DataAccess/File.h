@@ -20,13 +20,14 @@
 #ifndef _FILE_H_
 #define _FILE_H_
 
-class Archivo
+class File
 {
 public:
 
 protected:
 
 private:
+    std::string pathToFile;
 
 };
 

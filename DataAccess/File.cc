@@ -19,7 +19,7 @@
 
 
  /* File description:
- *  First fourth blocks: Metadata, bytemap and (Need to think)
+ *  First fourth blocks: Metadata, bytemap;
  *  Other blocks: Data
  *  Free space control: Bytemap, representing the percentage of use of each block
  *  Each register is finished with a EOF

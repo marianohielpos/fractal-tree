@@ -22,12 +22,29 @@
 #include <iostream>
 #include <string>
 
+#define END_OF_REGISTER 255
 
-Register::Register(char* stream){
 
-    std::string str;
+Register::register(char* stream){
 
-    for(uint i = 0; stream[i] != '\0'; i++){
-        str.append(stream[i])
+    std::vector<Node> nodes = null;
+
+    std::string node = '';
+
+    for(uint i = 0; stream[i] != END_OF_REGISTER ; i++){
+
+        node.append(stream[i])
+
+        if( stream[i] == '\0' ){
+            nodes.push_back(new Node(node));
+            node = '';
+        }
+
     }
+
+    return nodes;
+}
+
+Register::register(std::vector<Node> nodes){
+    
 }
