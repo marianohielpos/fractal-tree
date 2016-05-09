@@ -22,7 +22,7 @@
 #include <iostream>
 #include <string>
 
-#define END_OF_REGISTER 255
+#define END_OF_REGISTER 255 //Forbiden char character
 
 
 Register::register(char* stream){
@@ -36,7 +36,15 @@ Register::register(char* stream){
         node.append(stream[i])
 
         if( stream[i] == '\0' ){
-            nodes.push_back(new Node(node));
+            int id = node[0] + node[1] + node[3];
+
+            std::string code;
+            node.copy(code, 3, 4); //Copy the three letters of the codes
+
+            std::string message;
+            node.copy(message, node.length() - 7, 7); //Copy the description
+
+            nodes.push_back(new Node(id, code, message));
             node = '';
         }
 
@@ -46,5 +54,5 @@ Register::register(char* stream){
 }
 
 Register::register(std::vector<Node> nodes){
-    
+
 }
