@@ -2,7 +2,6 @@
 #include "../DataAccess/Persistance.h"
 #include <iostream>
 
-
 #define PATH "./test.bin"
 
 void verifyEqualness(Node::node a,Node::node b){

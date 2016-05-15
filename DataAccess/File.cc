@@ -1,11 +1,9 @@
-
- /* File description:
- *  First fourth blocks: Metadata, bytemap;
- *  Other blocks: Data
- *  Free space control: Bytemap, representing the percentage of use of each block
- *  Each register is finished with a EOF
- *
- */
+/* File description:
+*  First fourth blocks: Metadata, bytemap;
+*  Other blocks: Data
+*  Free space control: Bytemap, representing the percentage of use of each block
+*  Each register is finished with a EOF
+*/
 #include "file.h"
 #include "register.h"
 
@@ -14,7 +12,6 @@
 
 #define DATABASE_NAME "./database.bin" //Need to set as a parameter
 #define REGISTER_SIZE 4096 //The max size of the register in bytes
-
 
 File::getRawRegister(uint registerNumber) {
 
@@ -43,7 +40,6 @@ File::getRegister(uint registerNumber) {
     return new Register(this.getRawRegister(registerNumber));
 
 }
-
 
 File::saveRegister(){
 

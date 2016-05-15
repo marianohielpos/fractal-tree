@@ -1,14 +1,8 @@
-
-
 #include <std>
 #define CODE_SIZE 3
 
-
-
 #ifndef _NODE_H_
 #define _NODE_H_
-
-
 
 class Node
 {

@@ -4,7 +4,6 @@
 *
 */
 
-
 #include "node.h"
 
 Node::getId(){

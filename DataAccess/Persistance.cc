@@ -1,7 +1,5 @@
-
 #define SPACE_MAP_NUMBER
 #define ID_REGISTER_MAP_NUMBER
-
 
 Persistance::Constructor(std::string pathToFile){
     this.file = new File(pathToFile);
