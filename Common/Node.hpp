@@ -9,25 +9,29 @@ public:
 
     int* getId();
 
-    std::string getDescription();
+    std::string* getDescription();
 
-    std::string getCode();
+    std::string* getCode();
+
+    std::string* getFields();
 
     void setId(int* id);
 
-    void setCode(std::string cod);
+    void setCode(const char* cod);
 
-    void setDescription(std::string description);
+    void setDescription(const char* description);
 
-    Node(int* id, std::string cod, std::string description);
+    Node(int* id, const char* cod, const char* description);
+
+    ~Node(void);
 
 protected:
 
 private:
 
     int* id;
-    std::string cod;
-    std::string description;
+    std::string* code;
+    std::string* description;
 
 };
 

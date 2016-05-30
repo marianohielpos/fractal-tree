@@ -1,5 +1,5 @@
-#include "Register.h"
-#include "Node.h"
+#include "Register.hpp"
+#include "Node.hpp"
 #include <iostream>
 #include <string>
 

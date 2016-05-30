@@ -7,33 +7,51 @@
 #include "Node.hpp"
 #include <string>
 #include <iostream>
+#include <sstream>
+
 
 int* Node::getId(){
     return this->id;
 }
 
-std::string Node::getCode(){
-    return this->cod;
+std::string* Node::getCode(){
+    return this->code;
 }
 
-std::string Node::getDescription(){
+std::string* Node::getDescription(){
     return this->description;
 }
 
-void Node::setCode(std::string cod){
-    this->cod = cod;
+std::string* Node::getFields(){
+    std::stringstream ss;
+    ss << *this->getDescription() << *this->getCode() <<  (char)*this->getId();
+    return new std::string(ss.str());
 }
 
-void Node::setDescription(std::string description){
-    this->description = description;
+void Node::setCode(const char* code){
+    delete this->code;
+    this->code = new std::string(code);
+}
+
+void Node::setDescription(const char* description){
+    delete this->description;
+    this->description = new std::string(description);
 }
 
 void Node::setId(int* id){
-    this->id = id;
+    delete this->id;
+    this->id = new int(*id);
 }
 
-Node::Node(int* id, std::string cod, std::string description){
-    this->id = id;
-    this->cod = cod;
-    this->description = description;
+Node::Node(int* id, const char* code, const char* description){
+    this->id = new int(*id);
+    this->code = new std::string(code);
+    this->description = new std::string(description);
+}
+
+Node::~Node(void){
+    delete this->id;
+    delete this->code;
+    delete this->description;
+    delete this;
 }

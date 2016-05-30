@@ -1,4 +1,5 @@
-#include "./File.h"
+#include "./File.hpp"
+#include "./Register.hpp"
 
 #ifndef _PERSISTANCE_H_
 #define _PERSISTANCE_H_

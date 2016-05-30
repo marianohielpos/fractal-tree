@@ -4,8 +4,8 @@
 *  Free space control: Bytemap, representing the percentage of use of each block
 *  Each register is finished with a EOF
 */
-#include "file.h"
-#include "register.h"
+#include "File.hpp"
+#include "Register.hpp"
 
 #include <iostream>
 #include <fstream>
