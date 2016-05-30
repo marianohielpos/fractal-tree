@@ -1,17 +1,20 @@
+EXEC = NodeTest
 CC=g++
-CFLAGS=-c -Wall
-LDFLAGS=
-SOURCES= ./DataAccess/*  ./Common/* ./Logic/*
-OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=FractalTree
+CFLAGS=-Wall -std=c++11
+BIN = $(filter-out $(EXEC).cpp, $(wildcard *.cpp))
+BINFILES = $(BIN:.cpp=.o)
 
-all: $(SOURCES) $(EXECUTABLE)
+all: main
 
-$(EXECUTABLE): $(OBJECTS)
-    $(CC) $(LDFLAGS) $(OBJECTS) -o $@
+objects/%.o: %.cpp %.hpp
+	$(CC) $(CFLAGS) -c $<
 
-.cpp.o:
-    $(CC) $(CFLAGS) $< -o $@
+main: $(BINFILES)  $(EXEC).cpp
+	$(CC) $(CFLAGS) $(BINFILES) $(EXEC).cpp -o $(EXEC)
 
 clean:
-    rm *o hello
+	rm -f $(wildcard *.o) $(EXEC)
+
+test:
+
+.PHONY: clean main
