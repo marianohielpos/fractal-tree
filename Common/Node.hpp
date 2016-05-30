@@ -15,13 +15,13 @@ public:
 
     std::string* getFields();
 
-    void setId(int* id);
+    void setId(int id);
 
     void setCode(const char* cod);
 
     void setDescription(const char* description);
 
-    Node(int* id, const char* cod, const char* description);
+    Node(int id, const char* cod, const char* description);
 
     ~Node(void);
 

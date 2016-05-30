@@ -38,13 +38,13 @@ void Node::setDescription(const char* description){
     this->description = new std::string(description);
 }
 
-void Node::setId(int* id){
+void Node::setId(int id){
     delete this->id;
-    this->id = new int(*id);
+    this->id = new int(id);
 }
 
-Node::Node(int* id, const char* code, const char* description){
-    this->id = new int(*id);
+Node::Node(int id, const char* code, const char* description){
+    this->id = new int(id);
     this->code = new std::string(code);
     this->description = new std::string(description);
 }
@@ -53,5 +53,4 @@ Node::~Node(void){
     delete this->id;
     delete this->code;
     delete this->description;
-    delete this;
 }
