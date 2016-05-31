@@ -1,6 +1,8 @@
 #include "../common/Node.h"
 #include "../DataAccess/Persistance.h"
 #include <iostream>
+#include <string>
+#include <memory>
 
 #define PATH "./test.bin"
 
@@ -17,29 +19,41 @@ void verifyEqualness(Node::node a,Node::node b){
 
 int main ()
 {
-    Node::Node nodeOne = new Node();
-    Node::Node nodeTwo = new Node();
-    Node::Node nodeThree = new Node();
-    Node::Node nodeFour = new Node();
+    std::cout << "Starting \n";
+    char* COD1 = (char*)"111";
+    char* COD2 = (char*)"222";
+    char* COD3 = (char*)"333";
+    char* COD4 = (char*)"444";
+
+    char* descriptionOne = (char*)"descriptionOne";
+    char* descriptionTwo = (char*)"descriptionTwo";
+    char* descriptionThree = (char*)"descriptionThree";
+    char* descriptionFour = (char*)"descriptionFour";
+
+    std::cout << "Creating nodes \n";
+    std::unique_ptr<Node> pNodeOne(new Node(1, COD1, descriptionOne));
+    std::unique_ptr<Node> pNodeTwo(new Node(2, COD2, descriptionTwo));
+    std::unique_ptr<Node> pNodeThree(new Node(3, COD3, descriptionThree));
+    std::unique_ptr<Node> pNodeFour(new Node(4, COD4, descriptionFour));
 
     Persistance::Persistance persistance = new Persistance(PATH);
 
 
     std::cout << "Nodes are saved and recovered";
 
-    persistance.saveNode(node1);
+    persistance.saveNode(pNodeOne);
     Node::node nodeOneRecovered = persistance.getNode(1);
     verifyEqualness(nodeOne, nodeOneRecovered);
 
-    persistance.saveNode(nodeTwo);
+    persistance.saveNode(pNodeTwo);
     Node::node nodeTwoRecovered = persistance.getNode(2);
     verifyEqualness(nodeTwo, nodeOneRecovered);
 
-    persistance.saveNode(nodeThree);
+    persistance.saveNode(pNodeThree);
     Node::node nodeThreeRecovered = persistance.getNode(3);
     verifyEqualness(nodeThree, nodeOneRecovered);
 
-    persistance.saveNode(nodeFour);
+    persistance.saveNode(pNodeFour);
     Node::node nodeFourRecovered = persistance.getNode(4);
     verifyEqualness(nodeFour, nodeOneRecovered);
 
