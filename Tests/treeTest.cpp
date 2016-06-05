@@ -4,7 +4,7 @@
 #include "../Logic/FractalTree.hpp"
 using namespace std;
 
-int main{
+int main(){
 	FractalTree FT;
 	cout << "Test Arbol \n";
 	return 0;

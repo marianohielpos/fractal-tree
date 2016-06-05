@@ -23,7 +23,7 @@
 // Metodo refrescar
 void FractalTree::refrescar(){
 	nivel = Altura ();
-	Node *aux = raiz;
+	NodoBmas *aux = raiz;
 
 	while (!arbolVacio(aux->ramas[0]))
 		aux= aux->ramas[0];
@@ -36,7 +36,7 @@ void FractalTree::insertar (NodoProducto clave){
 	ea = false;
 	empujar (clave, raiz);
 	if(ea){
-		Node *nuevo = new Node();
+		NodoBmas *nuevo = new NodoBmas();
 		nuevo->cuentas = 1;
 		nuevo->claves[1] = mediana;
 		nuevo->ramas [0] = raiz;
@@ -47,7 +47,7 @@ void FractalTree::insertar (NodoProducto clave){
 }
 
 // Metodo Empujar
-void FractalTree::empujar (NodoProducto clave, Node *nodo){
+void FractalTree::empujar (NodoProducto clave, NodoBmas *nodo){
 	if(nodo == NULL){
 		ea= true;
 		mediana= clave;
@@ -94,7 +94,7 @@ void FractalTree::meterHoja(){
 
 // Metodo Dividir Nodo que usa las variables asignadas por Meter Hoja Mediana, P, K, Xr.
 void FractalTree::dividir(){
-	Node *mde = new Node();
+	NodoBmas *mde = new NodoBmas();
 	int pos;
 
 	if (k <= MIN)
@@ -114,7 +114,7 @@ void FractalTree::dividir(){
 		meterHoja();
 	else{
 		k = k-pos;
-		Node *aux = P;
+		NodoBmas *aux = P;
 		P = mde;
 		meterHoja();
 		P = aux;
@@ -133,7 +133,7 @@ void FractalTree::dividir(){
 }
 
 // Metodo que duplica un Nodo
-void FractalTree::doblar (Node *mde){
+void FractalTree::doblar (NodoBmas *mde){
 	for(int i = mde->cuentas; i >= 1; i--){
 		mde->claves[i + 1] = mde->claves[i];
 		mde->ramas [i + 1] = mde->ramas [i];
@@ -143,7 +143,7 @@ void FractalTree::doblar (Node *mde){
 }
 
 // Metodo Arbol Vacio
-bool FractalTree::arbolVacio(Node *nodo){
+bool FractalTree::arbolVacio(NodoBmas *nodo){
     return ((nodo == NULL) || (nodo->cuentas == 0));
 }
 
@@ -153,7 +153,7 @@ bool FractalTree::buscar(NodoProducto clave){
 }
 
 // Metodo buscar que retorna si el nodo existe o no
-bool FractalTree::buscar(NodoProducto clave, Node *nodo){
+bool FractalTree::buscar(NodoProducto clave, NodoBmas *nodo){
 	if(nodo->cuentas == 0)
 		esta = false;
 	else{
@@ -167,7 +167,7 @@ bool FractalTree::buscar(NodoProducto clave, Node *nodo){
 }
 
 // Metodo buscar nodo
-bool FractalTree::buscarNodo(NodoProducto clave, Node *nodo){
+bool FractalTree::buscarNodo(NodoProducto clave, NodoBmas *nodo){
         if(nodo == NULL)
         	return false;
         else{
@@ -197,7 +197,7 @@ void FractalTree::print_rec (){
 }
 
 // Metodo auxiliar de print_rec
-void FractalTree::print_rec_aux (Node *nodo){
+void FractalTree::print_rec_aux (NodoBmas *nodo){
 	if(!arbolVacio(nodo)){
 		print_rec_aux (nodo->ramas[0]);
 		for(int i = 1; i <= nodo->cuentas; i++){
@@ -210,7 +210,7 @@ void FractalTree::print_rec_aux (Node *nodo){
 // Metodo que retorna la Altura del arbol B+
 int FractalTree::Altura (){
 	int res = 0;
-	Node *aux = raiz;
+	NodoBmas *aux = raiz;
 	if (arbolVacio(aux)){
 		cout << "\nEl Arbol B+ esta Vacio!" << endl;
 		return 0;
@@ -229,14 +229,14 @@ int FractalTree::Altura (){
 void FractalTree:: Anchura(){
 	int largo = Altura();
 	int con = 1;
-	Node *pg = raiz;
+	NodoBmas *pg = raiz;
 	cout<<"Impresion del arbol B+ en anchura:"<<endl;
 	Anchura_aux (pg, largo, con);
 	cout << endl;
 }
 
 // Metodo auxiliar de Anchura
-void FractalTree:: Anchura_aux (Node *nodo, int largo, int con){
+void FractalTree:: Anchura_aux (NodoBmas *nodo, int largo, int con){
 	if (arbolVacio(nodo)){
 	}
 	else{
@@ -248,7 +248,7 @@ void FractalTree:: Anchura_aux (Node *nodo, int largo, int con){
 	}
 }
 
-void FractalTree::ImprimeNivel (Node *nodo, int con){
+void FractalTree::ImprimeNivel (NodoBmas *nodo, int con){
 	if(arbolVacio(nodo)){
 	}
 	else{
@@ -267,7 +267,7 @@ void FractalTree::ImprimeNivel (Node *nodo, int con){
 
 // Metodo Imprimir Arbol B+
 void FractalTree ::Imprimir (){
-	Node *aux= vsam;
+	NodoBmas *aux= vsam;
 	if (arbolVacio(aux))
 		cout << "\nEl Arbol B+ esta Vacio!" << endl;
 	else{
@@ -286,7 +286,7 @@ void FractalTree ::Imprimir (){
 bool FractalTree::Buscar(int c){
     int i;
 
-    Node *nodo = vsam;
+    NodoBmas *nodo = vsam;
     while (nodo != NULL){
         i = 0;
 
@@ -303,7 +303,7 @@ bool FractalTree::Buscar(int c){
 //ve si el el codigo c existe
 int FractalTree:: Esta(int c){
     int i;
-    Node *nodo = vsam;
+    NodoBmas *nodo = vsam;
     while (nodo != NULL){
         i = 0;
         for(; i <= ((nodo->cuentas) - 1); i++){
@@ -318,7 +318,7 @@ int FractalTree:: Esta(int c){
 //encuentra y retorna el nodo buscado
 NodoProducto* FractalTree:: Encontrar(int c){
     int i;
-    Node *nodo = vsam;
+    NodoBmas *nodo = vsam;
     NodoProducto *siesta;
     while (nodo != NULL){
         i = 0;
@@ -338,14 +338,14 @@ NodoProducto* FractalTree:: Encontrar(int c){
 /*******************************************************************************************/
 /*******************************************************************************************/
 
-void FractalTree::preOrdenRecursivo(Node *raiz){
+void FractalTree::preOrdenRecursivo(NodoBmas *raiz){
 	preOrdenRecursivoAux(raiz);
 }
 
 /* Realiza un recorrido del arbol de forma iterativa */
-void FractalTree::preOrdenRecursivoAux(Node *raiz){
+void FractalTree::preOrdenRecursivoAux(NodoBmas *raiz){
 
-	Node *pg = raiz;
+	NodoBmas *pg = raiz;
 
 	if( raiz != NULL ){
 
@@ -370,14 +370,14 @@ void FractalTree::preOrdenRecursivoAux(Node *raiz){
 
 //fstream file7("PostOrRecBmas.txt", ios::out); //archivo salida de recorrido
 
-void FractalTree::postOrdenRecursivo(Node *raiz){
+void FractalTree::postOrdenRecursivo(NodoBmas *raiz){
 	postOrdenRecursivoAux(raiz);
 }
 
 /* Realiza un recorrido del arbol de forma recursiva */
-void FractalTree::postOrdenRecursivoAux(Node *raiz){
+void FractalTree::postOrdenRecursivoAux(NodoBmas *raiz){
 
-	Node *pg = raiz;
+	NodoBmas *pg = raiz;
 
 	if( raiz != NULL ){
 
@@ -402,13 +402,13 @@ void FractalTree::postOrdenRecursivoAux(Node *raiz){
 
 //fstream file8("PreOrIteBmas.txt", ios::out); //archivo salida de recorrido
 
-void FractalTree::preOrdenIterativo(Node *raiz){
+void FractalTree::preOrdenIterativo(NodoBmas *raiz){
 	preOrdenIterativoAux(raiz);
 }
 
 /* Realiza un recorrido del arbol de forma iterativo */
-void FractalTree::preOrdenIterativoAux(Node *raiz){
-	Node *pg = raiz;
+void FractalTree::preOrdenIterativoAux(NodoBmas *raiz){
+	NodoBmas *pg = raiz;
 
 	if( raiz != NULL ){
 
@@ -433,13 +433,13 @@ void FractalTree::preOrdenIterativoAux(Node *raiz){
 
 //fstream file9("PostOrIteBmas.txt", ios::out); //archivo salida de recorrido
 
-void FractalTree::postOrdenIterativo(Node *raiz){
+void FractalTree::postOrdenIterativo(NodoBmas *raiz){
 	postOrdenIterativoAux(raiz);
 }
 
 /* Realiza un recorrido del arbol de forma iterativo */
-void FractalTree::postOrdenIterativoAux(Node *raiz){
-	Node *pg = raiz;
+void FractalTree::postOrdenIterativoAux(NodoBmas *raiz){
+	NodoBmas *pg = raiz;
 
 	if( raiz != NULL ){
 

@@ -24,9 +24,11 @@
 #include <string>
 //#include "../Common/Node.hpp"
 //#include "../DataAccess/Persistance.hpp"
+#include "NodoBmas.hpp"
+#include "NodoProducto.hpp"
 using namespace std;
 
-//Clase NodoProducto
+/*//Clase NodoProducto
 class NodoProducto{
 	public:
 	int    Codigo;
@@ -66,7 +68,7 @@ class NodoBmas{
 // Costructor
 NodoBmas::NodoBmas(){
     cuentas = 0;
-}
+}*/
 
 class FractalTree
 {
