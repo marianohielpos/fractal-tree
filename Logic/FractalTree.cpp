@@ -16,11 +16,9 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <iostream.h>
-#include <fstream.h>
-#include "../Logic/FractalTree.h"
-#include "../Common/Node.h"
-#include "../DataAccess/Persistance.h"
+#include <iostream>
+#include <fstream>
+#include "../Logic/FractalTree.hpp"
 
 // Metodo refrescar
 void FractalTree::refrescar(){
