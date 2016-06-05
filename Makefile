@@ -1,4 +1,4 @@
-EXEC = nodeTest.cpp
+EXEC = persistanceTest
 CC=g++
 CFLAGS=-Wall -std=c++11
 BINFILES = $(wildcard *.o)
@@ -22,7 +22,7 @@ persistance:
 common:
 	$(CC) $(CFLAGS) -c $(COMMON_BIN)
 
-test: common
-	$(CC) $(CFLAGS) $(BINFILES) $(TESTS_PATH)$(EXEC) -o $(EXEC)
+test: common persistance
+	$(CC) $(CFLAGS) $(BINFILES) $(TESTS_PATH)$(EXEC).cpp -o $(EXEC)
 
 .PHONY: clean main

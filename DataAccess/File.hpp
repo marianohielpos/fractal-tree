@@ -25,7 +25,11 @@ public:
 
     Node* getNode(size_t id);
 
+    bool setToCeroPosition(size_t position);
+
     bool saveNode(Node* node);
+
+    bool deleteNode(size_t id);
 
     size_t getMappingZone(size_t zone);
 

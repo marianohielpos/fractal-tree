@@ -1,20 +1,20 @@
-#include "../common/Node.h"
-#include "../DataAccess/Persistance.h"
+#include "../Common/Node.hpp"
+#include "../DataAccess/File.hpp"
 #include <iostream>
 #include <string>
 #include <memory>
 
 #define PATH "./test.bin"
 
-void verifyEqualness(Node::node a,Node::node b){
+void verifyEqualness(Node* a,Node* b){
 
-    if( a.getCode() == b.getCode()
-       && a.getDescription() == b.getDescription()
-       && a.getId() == b-getId() ){
-           return std::cout << "OK";
+    if( a->getId() == b->getId() ){
+           std::cout << "OK";
+           return;
        }
 
-    return std::cout << "Fail";
+    std::cout << "Fail";
+    return;
 }
 
 int main ()
@@ -36,60 +36,66 @@ int main ()
     std::unique_ptr<Node> pNodeThree(new Node(3, COD3, descriptionThree));
     std::unique_ptr<Node> pNodeFour(new Node(4, COD4, descriptionFour));
 
-    Persistance::Persistance persistance = new Persistance(PATH);
+
+    std::cout << "Creating file \n";
+
+    File* file = new File(PATH, 4096);
 
 
     std::cout << "Nodes are saved and recovered";
+    return 0;
 
-    persistance.saveNode(pNodeOne);
-    Node::node nodeOneRecovered = persistance.getNode(1);
-    verifyEqualness(nodeOne, nodeOneRecovered);
+    file->saveNode(pNodeOne.get());
+    Node* nodeOneRecovered = file->getNode(1);
+    verifyEqualness(pNodeOne.get(), nodeOneRecovered);
 
-    persistance.saveNode(pNodeTwo);
-    Node::node nodeTwoRecovered = persistance.getNode(2);
-    verifyEqualness(nodeTwo, nodeOneRecovered);
+    file->saveNode(pNodeTwo.get());
+    Node* nodeTwoRecovered = file->getNode(2);
+    verifyEqualness(pNodeTwo.get(), nodeOneRecovered);
 
-    persistance.saveNode(pNodeThree);
-    Node::node nodeThreeRecovered = persistance.getNode(3);
-    verifyEqualness(nodeThree, nodeOneRecovered);
+    file->saveNode(pNodeThree.get());
+    Node* nodeThreeRecovered = file->getNode(3);
+    verifyEqualness(pNodeThree.get(), nodeOneRecovered);
 
-    persistance.saveNode(pNodeFour);
-    Node::node nodeFourRecovered = persistance.getNode(4);
-    verifyEqualness(nodeFour, nodeOneRecovered);
+    file->saveNode(pNodeFour.get());
+    Node* nodeFourRecovered = file->getNode(4);
+    verifyEqualness(pNodeFour.get(), nodeOneRecovered);
 
 
     std::cout << "Nodes are modifyed";
 
-    Node::node nodeOne = persistance.getNode(1);
-    nodeOne.setDescription("Asd");
-    persistance.saveNode(nodeOne);
+    Node* nodeOne = file->getNode(1);
+    nodeOne->setDescription("Asd");
+    file->saveNode(nodeOne);
 
-    Node::node nodeOneRecovered = persistance.getNode(1);
+    nodeOneRecovered = file->getNode(1);
     verifyEqualness(nodeOne, nodeOneRecovered);
 
 
     std::cout << "Nodes are deleted";
 
-    persistance.deleteNode(1);
-    Node::node nodeOneRecovered = persistance.getNode(1);
+    file->deleteNode(1);
+    nodeOneRecovered = file->getNode(1);
 
-    if( nodeOneRecovered != null ){
-        return std::cout << "Fail";
+    if( nodeOneRecovered != NULL ){
+        std::cout << "Fail";
+        return 1;
     }
 
-    persistance.deleteNode(1);
-    persistance.deleteNode(2);
-    persistance.deleteNode(3);
+    file->deleteNode(1);
+    file->deleteNode(2);
+    file->deleteNode(3);
 
-    Node::node nodeTwoRecovered = persistance.getNode(2);
-    Node::node nodeThreeRecovered = persistance.getNode(3);
-    Node::node nodeFourRecovered = persistance.getNode(4);
+    nodeTwoRecovered = file->getNode(2);
+    nodeThreeRecovered = file->getNode(3);
+    nodeFourRecovered = file->getNode(4);
 
-    if( nodeTwoRecovered != null && nodeThreeRecovered!= null && nodeFourRecovered != null){
-        return std::cout << "ok";
+    if( nodeTwoRecovered != NULL && nodeThreeRecovered!= NULL && nodeFourRecovered != NULL){
+        std::cout << "ok";
     }
     else{
-        return std::cout << "Fail";
+        std::cout << "Fail";
+        return 1;
     }
 
     delete nodeOneRecovered;

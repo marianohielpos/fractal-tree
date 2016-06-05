@@ -5,7 +5,7 @@
 *  Each register is finished with a EOF
 */
 #include "File.hpp"
-
+#include "../Common/Node.hpp"
 #include <iostream>
 #include <fstream>
 
@@ -20,25 +20,34 @@ File::File(std::string pathToFile, size_t registerSize){
     {
         this->initializeControlSector(0);
     }
+    std::cout << "Finished\n";
 }
 
-bool File::initializeControlSector(size_t zone){
-    std::fstream myfile;
-    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
+bool File::initializeControlSector(size_t block){
 
-    if( zone != 0){
-        myfile.seekg(this->getMappingZonePosition(zone));
+    std::cout << "Initializing\n";
+    std::fstream myfile;
+    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::trunc);
+
+    std::cout << "Chequing block\n";
+    if( block != 0){
+        myfile.seekg(this->getMappingZonePosition(block));
     }
 
-    if( !myfile ){
+    std::cout << "Chequing if file is open\n";
+    if( !myfile.is_open() ){
         return false;
     }
+
+    std::cout << "Setting to cero\n";
     for(size_t counter = 0; counter < this->registerSize; counter++){
-        myfile.put((char)0);
+        myfile.put(0);
     }
 
+    std::cout << "Closing file\n";
     myfile.close();
 
+    std::cout << "Return\n";
     return true;
 }
 
@@ -49,15 +58,15 @@ size_t File::getNodePosition(size_t id){
 
     size_t numberOfZones = fileSize / ( this->registerSize / BITS_PER_BYTE );
 
-    for(int i = 0;i < numberOfZones; i++){
+    for(size_t i = 0;i < numberOfZones; i++){
         block = this->getZoneControlBlock(i);
-        for(int j = 0; j <= this->registerSize; j += BITS_PER_BYTE){
+        for(size_t j = 0; j <= this->registerSize; j += BITS_PER_BYTE){
 
             //Converion from char to size_t
             size_t x = (block[j] << 24) | (block[j + 1] << 16) | (block[j + 2] << 8) | block[j + 3];
 
             if( x == id ){
-                return (this->getMappingZonePosition(i) + j * BITS_PER_BYTE);
+                return (this->getMappingZonePosition(i) + j * BITS_PER_BYTE + this->registerSize);
             }
         }
     }
@@ -149,7 +158,51 @@ bool File::saveNode(Node* node){
 
     myfile.seekg(blockPosition);
 
-    myfile.write(node->getStream(),node->getSize() );
+    myfile.write(node->getStream(), node->getSize() );
 
 	return true;
+}
+
+bool File::setToCeroPosition(size_t position){
+    std::fstream myfile;
+    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
+
+    if( !myfile ){
+        return false;
+    }
+
+    myfile.seekg(this->getMappingZonePosition(position));
+
+    for(size_t counter = 0; counter < 4; counter++){
+        myfile.put((char)0);
+    }
+
+    myfile.close();
+
+    return true;
+
+}
+
+bool File::deleteNode(size_t id){
+    size_t fileSize = this->getFileSize();
+
+    char* block;
+
+    size_t numberOfZones = fileSize / ( this->registerSize / BITS_PER_BYTE );
+
+    for(size_t i = 0;i < numberOfZones; i++){
+        block = this->getZoneControlBlock(i);
+        for(size_t j = 0; j <= this->registerSize; j += BITS_PER_BYTE){
+
+            //Converion from char to size_t
+            size_t x = (block[j] << 24) | (block[j + 1] << 16) | (block[j + 2] << 8) | block[j + 3];
+
+            if( x == id ){
+                size_t pointerPosition = this->getMappingZonePosition(i) + j;
+                return setToCeroPosition(pointerPosition);
+            }
+        }
+    }
+    return false;
+
 }

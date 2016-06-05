@@ -56,6 +56,10 @@ Node::Node(char* biteString){
     //TODO
 }
 
+size_t Node::getSize(){
+    return sizeof(this->id) + sizeof(this->code) + sizeof(this->description);
+}
+
 Node::~Node(void){
     delete this->id;
     delete this->code;
