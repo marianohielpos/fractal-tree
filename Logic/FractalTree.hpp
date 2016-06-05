@@ -1,3 +1,5 @@
+#ifndef _FRACTALTREE_H_
+#define _FRACTALTREE_H_
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
  * f-tree.h
@@ -17,13 +19,61 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _FRACTALTREE_H_
-#define _FRATREE_H_
+#include <iostream>
+#include <fstream>
+#include <string>
+//#include "../Common/Node.hpp"
+//#include "../DataAccess/Persistance.hpp"
+#include "NodoBmas.hpp"
+#include "NodoProducto.hpp"
+using namespace std;
+
+/*//Clase NodoProducto
+class NodoProducto{
+	public:
+	int    Codigo;
+	int    Precio;
+	string Descripcion;
+
+	// Prototipos
+	NodoProducto ();
+	NodoProducto(int cod, int pres, string des);
+};
+
+// Constructor
+NodoProducto::NodoProducto(){
+	Codigo      = 0;
+	Precio      = 0;
+	Descripcion = "";
+}
+// Constructor
+NodoProducto::NodoProducto(int cod, int pres, string des){
+	Codigo      = cod;
+	Precio      = pres;
+	Descripcion = des;
+}
+
+// Clase Nodo B+
+class NodoBmas{
+    public:
+	NodoProducto claves [5];
+	NodoBmas     *ramas [5];
+	NodoBmas     *shojas;
+	int cuentas;
+
+	// Prototipos
+	NodoBmas ();
+};
+
+// Costructor
+NodoBmas::NodoBmas(){
+    cuentas = 0;
+}*/
 
 class FractalTree
 {
 public:
-	Node *raiz, *Xr, *P, *N, *vsam;
+	NodoBmas *raiz, *Xr, *P, *N, *vsam;
 	int k, cuentas, MAX, MIN, nivel;
 	NodoProducto mediana;
 	bool esta, ea;
@@ -44,25 +94,25 @@ public:
 	}
 	void refrescar ();
 	void insertar (NodoProducto);
-	void empujar(NodoProducto, Node *);
+	void empujar(NodoProducto, NodoBmas *);
 	void meterHoja();
-	bool arbolVacio(Node *);
+	bool arbolVacio(NodoBmas *);
 	void dividir ();
-	void doblar (Node *);
+	void doblar (NodoBmas *);
 	//imprime el arbol en orden por la referencia de la raiz
 	void print_rec ();
-	void print_rec_aux (Node *nodo);//auxiliar
-	bool buscarNodo (NodoProducto clave, Node *nodo);
-	bool buscar (NodoProducto clave, Node *nodo);
+	void print_rec_aux (NodoBmas *nodo);//auxiliar
+	bool buscarNodo (NodoProducto clave, NodoBmas *nodo);
+	bool buscar (NodoProducto clave, NodoBmas *nodo);
 	//busca si una clace existe o no en el arbol
 	bool buscar (NodoProducto clave);
 	//da la altura
 	int  Altura ();
 	//imprime en anchura
 	void Anchura();
-	void Anchura_aux (Node *, int , int);
+	void Anchura_aux (NodoBmas *, int , int);
 	//imprime por niveles auxiliar de anchura aux
-	void ImprimeNivel(Node *, int);
+	void ImprimeNivel(NodoBmas *, int);
 	//imprime por la referencia de orden
 	void Imprimir ();
 	//carga el archivo de productos
@@ -70,15 +120,15 @@ public:
 
 	/***********  Recorridos **************************/
 
-	void postOrdenRecursivo(Node *r);
-	void postOrdenIterativo(Node *r);
-	void preOrdenRecursivo(Node *r);
-	void preOrdenIterativo(Node *r);
+	void postOrdenRecursivo(NodoBmas *r);
+	void postOrdenIterativo(NodoBmas *r);
+	void preOrdenRecursivo(NodoBmas *r);
+	void preOrdenIterativo(NodoBmas *r);
 
-	void postOrdenRecursivoAux(Node *r);
-	void postOrdenIterativoAux(Node *r);
-	void preOrdenRecursivoAux(Node *r);
-	void preOrdenIterativoAux(Node *r);
+	void postOrdenRecursivoAux(NodoBmas *r);
+	void postOrdenIterativoAux(NodoBmas *r);
+	void preOrdenRecursivoAux(NodoBmas *r);
+	void preOrdenIterativoAux(NodoBmas *r);
 
 	//bool buscarNodo (int clave, Node *pagina);
 	bool Buscar (int clave);
