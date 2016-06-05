@@ -7,13 +7,15 @@ class Node
 {
 public:
 
-    int* getId();
+    size_t* getId();
 
     std::string* getDescription();
 
     std::string* getCode();
 
-    std::string* getFields();
+    const char* getStream();
+
+    size_t getSize();
 
     void setId(int id);
 
@@ -21,7 +23,9 @@ public:
 
     void setDescription(const char* description);
 
-    Node(int id, const char* cod, const char* description);
+    Node(size_t id, const char* cod, const char* description);
+
+    Node(char* biteStream);
 
     ~Node(void);
 
@@ -29,7 +33,7 @@ protected:
 
 private:
 
-    int* id;
+    size_t* id;
     std::string* code;
     std::string* description;
 

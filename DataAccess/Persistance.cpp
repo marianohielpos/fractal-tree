@@ -1,32 +1,31 @@
 #define SPACE_MAP_NUMBER
 #define ID_REGISTER_MAP_NUMBER
 
+#include "../Common/Node.hpp"
+#include "./File.hpp"
+
+
 Persistance::Constructor(std::string pathToFile){
     this.file = new File(pathToFile);
-
 }
 
-Persistance::getNode(int id){
+Node* Persistance::getNode(size_t id){
 
-    throw 1; //Couldn't finde node
-
-    return node;
+    return this.file.getNode(id);
 }
 
-Persistance::saveNode(node){
+bool Persistance::saveNode(node){
 
-    throw 1; //Node doesn't fit
-
-    return 0;
+    return this.file.saveNode(id);
 }
 
-Persistance::findFreeSpace(char *freeSpaceMetadata){
-    char* rawRegister =  this.file.getRawRegister(SPACE_MAP_NUMBER);
+void Persistance::findFreeSpace(char *freeSpaceMetadata){
+    char* rawRegister =  this.file.getRegister(SPACE_MAP_NUMBER);
 
     //Analize the register to find free space
 }
 
-Persistance::findRegisterAddress(int nodeId){
+void Persistance::findRegisterAddress(int nodeId){
     char* rawRegister = this.file.getRegister(ID_REGISTER_MAP_NUMBER);
 
     //Analize the register to find the number where the node is in

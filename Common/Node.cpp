@@ -9,8 +9,10 @@
 #include <iostream>
 #include <sstream>
 
+#define FRACTAL_COHEFICIENT
 
-int* Node::getId(){
+
+size_t* Node::getId(){
     return this->id;
 }
 
@@ -22,10 +24,11 @@ std::string* Node::getDescription(){
     return this->description;
 }
 
-std::string* Node::getFields(){
+const char* Node::getStream(){
     std::stringstream ss;
     ss << *this->getDescription() << *this->getCode() <<  (char)*this->getId();
-    return new std::string(ss.str());
+    const char* p = ss.str().c_str();
+    return p;
 }
 
 void Node::setCode(const char* code){
@@ -40,13 +43,17 @@ void Node::setDescription(const char* description){
 
 void Node::setId(int id){
     delete this->id;
-    this->id = new int(id);
+    this->id = new size_t(id);
 }
 
-Node::Node(int id, const char* code, const char* description){
-    this->id = new int(id);
+Node::Node(size_t id, const char* code, const char* description){
+    this->id = new size_t(id);
     this->code = new std::string(code);
     this->description = new std::string(description);
+}
+
+Node::Node(char* biteString){
+    //TODO
 }
 
 Node::~Node(void){

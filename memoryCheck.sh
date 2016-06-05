@@ -1,1 +1,1 @@
-valgrind --leak-check=yes ./FractalTest
+valgrind --leak-check=yes ./nodeTest
