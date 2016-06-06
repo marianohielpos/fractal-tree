@@ -10,6 +10,8 @@ class File
 {
 public:
 
+    void getZoneValue(uint32_t zone);
+
     bool initializeControlSector(uint32_t zone);
 
     uint32_t getNodePosition(uint32_t id);

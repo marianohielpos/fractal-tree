@@ -44,12 +44,18 @@ int main ()
 
     std::cout << "Nodes are saved and recovered\n";
 
+    file->getZoneValue(0);
+
     file->saveNode(pNodeOne.get());
+
+    file->getZoneValue(0);
+    file->getZoneValue(4);
 
     file->saveNode(pNodeTwo.get());
 
-    return 0;
+    file->getZoneValue(4);
 
+    return 0;
 
     file->saveNode(pNodeThree.get());
     file->saveNode(pNodeFour.get());

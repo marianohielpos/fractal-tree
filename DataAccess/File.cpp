@@ -74,7 +74,7 @@ uint32_t File::getNodePosition(uint32_t id){
 }
 
 uint32_t File::getControlZoneNumber(uint32_t blockPosition){
-    return blockPosition/this->registerSize -1;
+    return (blockPosition/this->registerSize -1)*4;
 }
 
 char* File::getZoneControlBlock(uint32_t zone){
@@ -248,5 +248,24 @@ bool File::deleteNode(uint32_t id){
         }
     }
     return false;
+}
 
+
+void File::getZoneValue(uint32_t zone){
+    std::fstream myfile;
+
+    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
+
+    char block[4];
+
+    myfile.seekg(zone);
+
+    myfile.read(block, 4);
+
+    myfile.close();
+
+    std::cout << (int) block[0] << "\n";
+    std::cout << (int) block[1] << "\n";
+    std::cout << (int) block[2] << "\n";
+    std::cout << (int) block[3] << "\n";
 }
