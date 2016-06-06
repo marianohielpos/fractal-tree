@@ -42,23 +42,28 @@ int main ()
     File* file = new File(PATH, 4096);
 
 
-    std::cout << "Nodes are saved and recovered";
+    std::cout << "Nodes are saved and recovered\n";
 
     file->saveNode(pNodeOne.get());
+
+    file->saveNode(pNodeTwo.get());
+
     return 0;
+
+
+    file->saveNode(pNodeThree.get());
+    file->saveNode(pNodeFour.get());
+
 
     Node* nodeOneRecovered = file->getNode(1);
     verifyEqualness(pNodeOne.get(), nodeOneRecovered);
 
-    file->saveNode(pNodeTwo.get());
     Node* nodeTwoRecovered = file->getNode(2);
     verifyEqualness(pNodeTwo.get(), nodeOneRecovered);
 
-    file->saveNode(pNodeThree.get());
     Node* nodeThreeRecovered = file->getNode(3);
     verifyEqualness(pNodeThree.get(), nodeOneRecovered);
 
-    file->saveNode(pNodeFour.get());
     Node* nodeFourRecovered = file->getNode(4);
     verifyEqualness(pNodeFour.get(), nodeOneRecovered);
 

@@ -1,4 +1,5 @@
 #include <string>
+#include <stdint.h>
 
 #ifndef _NODE_H_
 #define _NODE_H_
@@ -7,7 +8,7 @@ class Node
 {
 public:
 
-    size_t* getId();
+    uint32_t* getId();
 
     std::string* getDescription();
 
@@ -15,7 +16,7 @@ public:
 
     const char* getStream();
 
-    size_t getSize();
+    uint32_t getSize();
 
     void setId(int id);
 
@@ -23,7 +24,7 @@ public:
 
     void setDescription(const char* description);
 
-    Node(size_t id, const char* cod, const char* description);
+    Node(uint32_t id, const char* cod, const char* description);
 
     Node(char* biteStream);
 
@@ -33,7 +34,7 @@ protected:
 
 private:
 
-    size_t* id;
+    uint32_t* id;
     std::string* code;
     std::string* description;
 

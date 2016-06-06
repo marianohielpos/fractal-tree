@@ -8,10 +8,9 @@
 #include "../Common/Node.hpp"
 #include <iostream>
 #include <fstream>
+#include <string.h>
 
-#define BITS_PER_BYTE 4
-
-File::File(std::string pathToFile, size_t registerSize){
+File::File(std::string pathToFile, uint32_t registerSize){
 
     this->registerSize = registerSize;
     this->pathToFile = std::string(pathToFile);
@@ -23,7 +22,7 @@ File::File(std::string pathToFile, size_t registerSize){
     std::cout << "Finished\n";
 }
 
-bool File::initializeControlSector(size_t block){
+bool File::initializeControlSector(uint32_t block){
 
     std::cout << "Initializing\n";
     std::fstream myfile;
@@ -40,7 +39,7 @@ bool File::initializeControlSector(size_t block){
     }
 
     std::cout << "Setting to cero\n";
-    for(size_t counter = 0; counter < this->registerSize; counter++){
+    for(uint32_t counter = 0; counter < this->registerSize; counter++){
         myfile.put(0);
     }
 
@@ -51,39 +50,41 @@ bool File::initializeControlSector(size_t block){
     return true;
 }
 
-size_t File::getNodePosition(size_t id){
-    size_t fileSize = this->getFileSize();
+uint32_t File::getNodePosition(uint32_t id){
+    uint32_t fileSize = this->getFileSize();
 
     char* block;
 
-    size_t numberOfZones = fileSize / ( this->registerSize / BITS_PER_BYTE );
+    uint32_t number;
 
-    for(size_t i = 0;i < numberOfZones; i++){
+    uint32_t numberOfZones = fileSize % ( this->registerSize / sizeof(uint32_t) ) + 1;
+
+    for(uint32_t i = 0;i < numberOfZones; i++){
         block = this->getZoneControlBlock(i);
-        for(size_t j = 0; j <= this->registerSize; j += BITS_PER_BYTE){
-
-            //Converion from char to size_t
-            size_t x = (block[j] << 24) | (block[j + 1] << 16) | (block[j + 2] << 8) | block[j + 3];
-
-            if( x == id ){
-                return (this->getMappingZonePosition(i) + j * BITS_PER_BYTE + this->registerSize);
+        for(uint32_t j = 0; j < this->registerSize; j += 4){
+            //Converion from char to uint32_t
+            memcpy(&number, block + j, sizeof(uint32_t));
+            if( number == id ){
+                std::cout << "Find: " << id << "  " << j << " " <<((j/4 + i + 1) * this->registerSize) << std::endl;
+                return ((j/4 + i + 1) * this->registerSize);
             }
         }
     }
     return 0;
 }
 
-size_t File::getControlZoneNumber(size_t blockPosition){
-    return ((blockPosition%this->registerSize)*1025) + (blockPosition/this->registerSize)/4 ;
+uint32_t File::getControlZoneNumber(uint32_t blockPosition){
+    return blockPosition/this->registerSize -1;
 }
 
-char* File::getZoneControlBlock(size_t zone){
-    size_t blockPosition = this->getMappingZonePosition(zone);
+char* File::getZoneControlBlock(uint32_t zone){
+    uint32_t blockPosition = this->getMappingZonePosition(zone);
+    std::cout << "mappingzone  " << blockPosition   << std::endl;
 
     return this->getBlock(blockPosition);
 }
 
-char* File::getBlock(size_t blockPosition){
+char* File::getBlock(uint32_t blockPosition){
 
     char* memblock;
     std::fstream myfile;
@@ -95,18 +96,18 @@ char* File::getBlock(size_t blockPosition){
     }
 
     memblock = new char [this->registerSize];
-    myfile.seekg((blockPosition));
+    myfile.seekg(0);
     myfile.read(memblock, this->registerSize);
     myfile.close();
 
     return memblock;
 }
 
-size_t File::getMappingZonePosition(size_t zone){
-    return (zone * (this->registerSize / BITS_PER_BYTE) + zone);
+uint32_t File::getMappingZonePosition(uint32_t zone){
+    return (zone * (this->registerSize / sizeof(uint32_t)) + zone);
 }
 
-size_t File::getFileSize(){
+uint32_t File::getFileSize(){
     std::streampos begin, end;
     std::ifstream myfile(this->pathToFile.c_str(), std::ios::binary);
 
@@ -116,18 +117,18 @@ size_t File::getFileSize(){
 
     myfile.close();
 
-    return (size_t)(end-begin);
+    return (uint32_t)(end-begin);
 }
 
-size_t File::getFreeSpaceDirection(){
+uint32_t File::getFreeSpaceDirection(){
 
     return this->getNodePosition(0);
 
 }
 
-Node* File::getNode(size_t id){
+Node* File::getNode(uint32_t id){
 
-    size_t blockPosition = this->getNodePosition(id);
+    uint32_t blockPosition = this->getNodePosition(id);
 
     if( blockPosition == 0 ){
         return NULL;
@@ -148,17 +149,16 @@ bool File::saveNode(Node* node){
         return false;
     }
 
-    size_t blockPosition = getNodePosition(*node->getId());
-
-    std::cout << "Block position\n" << blockPosition << "\n";
+    uint32_t blockPosition = getNodePosition(*node->getId());
 
     if( blockPosition == 0 ){
         blockPosition = this->getFreeSpaceDirection();
     }
 
-    std::cout << "Block position\n" << blockPosition << "\n";
+    std::cout << "Node position: " << blockPosition << std::endl;
 
-    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::app);
+
+    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
 
     if ( !myfile.is_open() ) {
       return NULL;
@@ -166,11 +166,9 @@ bool File::saveNode(Node* node){
 
     myfile.seekg(blockPosition);
 
-    std::cout << "Node size\n" << node->getSize() << "\n";
-
     myfile.write(node->getStream(), node->getSize() );
 
-    for(size_t i = node->getSize(); i < this->registerSize; i++){
+    for(uint32_t i = node->getSize(); i < this->registerSize; i++){
         myfile.put(0);
     }
 
@@ -181,16 +179,14 @@ bool File::saveNode(Node* node){
 	return true;
 }
 
-bool File::registerId(size_t blockPosition, size_t id){
+bool File::registerId(uint32_t blockPosition, uint32_t id){
     std::fstream myfile;
 
-    size_t controlZone = getControlZoneNumber(blockPosition);
+    std::cout << "blockPosition: " << blockPosition << std::endl;
 
-    std::cout << "blockPosition\n" << blockPosition << "\n";
+    uint32_t controlZone = getControlZoneNumber(blockPosition);
 
-    std::cout << "controlZone\n" << controlZone << "\n";
-
-    std::cout << "id\n" << id << "\n";
+    std::cout << "controlZone: " << controlZone << std::endl;
 
     myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
 
@@ -200,14 +196,18 @@ bool File::registerId(size_t blockPosition, size_t id){
 
     myfile.seekg(controlZone);
 
-    myfile.write((char*) &id, 4);
+    char stream[255] = "";
+
+    memcpy(stream, &id, sizeof(id));
+
+    myfile.write(stream, sizeof(id));
 
     myfile.close();
 
     return true;
 }
 
-bool File::setToCeroPosition(size_t position){
+bool File::setToCeroPosition(uint32_t position){
     std::fstream myfile;
     myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
 
@@ -217,7 +217,7 @@ bool File::setToCeroPosition(size_t position){
 
     myfile.seekg(this->getMappingZonePosition(position));
 
-    for(size_t counter = 0; counter < 4; counter++){
+    for(uint32_t counter = 0; counter < sizeof(uint32_t); counter++){
         myfile.put((char)0);
     }
 
@@ -227,22 +227,22 @@ bool File::setToCeroPosition(size_t position){
 
 }
 
-bool File::deleteNode(size_t id){
-    size_t fileSize = this->getFileSize();
+bool File::deleteNode(uint32_t id){
+    uint32_t fileSize = this->getFileSize();
 
     char* block;
 
-    size_t numberOfZones = fileSize / ( this->registerSize / BITS_PER_BYTE );
+    uint32_t numberOfZones = fileSize / ( this->registerSize / sizeof(uint32_t) );
 
-    for(size_t i = 0;i < numberOfZones; i++){
+    for(uint32_t i = 0;i < numberOfZones; i++){
         block = this->getZoneControlBlock(i);
-        for(size_t j = 0; j <= this->registerSize; j += BITS_PER_BYTE){
+        for(uint32_t j = 0; j <= this->registerSize; j += sizeof(uint32_t)){
 
-            //Converion from char to size_t
-            size_t x = (block[j] << 24) | (block[j + 1] << 16) | (block[j + 2] << 8) | block[j + 3];
+            //Converion from char to uint32_t
+            uint32_t x = (block[j] << 24) | (block[j + 1] << 16) | (block[j + 2] << 8) | block[j + 3];
 
             if( x == id ){
-                size_t pointerPosition = this->getMappingZonePosition(i) + j;
+                uint32_t pointerPosition = this->getMappingZonePosition(i) + j;
                 return setToCeroPosition(pointerPosition);
             }
         }

@@ -3,46 +3,47 @@
 
 #include <iostream>
 #include "../Common/Node.hpp"
+#include <stdint.h>
 
 
 class File
 {
 public:
 
-    bool initializeControlSector(size_t zone);
+    bool initializeControlSector(uint32_t zone);
 
-    size_t getNodePosition(size_t id);
+    uint32_t getNodePosition(uint32_t id);
 
-    char* getZoneControlBlock(size_t zone);
+    char* getZoneControlBlock(uint32_t zone);
 
-    char* getBlock(size_t blockPosition);
+    char* getBlock(uint32_t blockPosition);
 
-    size_t getMappingZonePosition(size_t zone);
+    uint32_t getMappingZonePosition(uint32_t zone);
 
-    size_t getFileSize();
+    uint32_t getFileSize();
 
-    size_t getFreeSpaceDirection();
+    uint32_t getFreeSpaceDirection();
 
-    bool registerId(size_t blockPosition, size_t id);
+    bool registerId(uint32_t blockPosition, uint32_t id);
 
-    size_t getControlZoneNumber(size_t blockPosition);
+    uint32_t getControlZoneNumber(uint32_t blockPosition);
 
-    Node* getNode(size_t id);
+    Node* getNode(uint32_t id);
 
-    bool setToCeroPosition(size_t position);
+    bool setToCeroPosition(uint32_t position);
 
     bool saveNode(Node* node);
 
-    bool deleteNode(size_t id);
+    bool deleteNode(uint32_t id);
 
-    size_t getMappingZone(size_t zone);
+    uint32_t getMappingZone(uint32_t zone);
 
-    File(std::string pathToFile, size_t registerSize);
+    File(std::string pathToFile, uint32_t registerSize);
 
 protected:
 
 private:
-    size_t registerSize;
+    uint32_t registerSize;
     std::string pathToFile;
 };
 
