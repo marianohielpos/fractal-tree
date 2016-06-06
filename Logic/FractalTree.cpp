@@ -56,7 +56,7 @@ void FractalTree::empujar (NodoProducto clave, NodoBmas *nodo){
 	else{
 		esta = buscarNodo (clave, nodo);
 		if(esta)
-			cout << "\nCodigo Repetido: "<< clave.Codigo << endl;
+			cout << "\nCodigo Repetido: "<< clave.ID << endl;
 		else{
 			empujar (clave, nodo->ramas[k]);
 			buscarNodo(clave, nodo);
@@ -171,16 +171,16 @@ bool FractalTree::buscarNodo(NodoProducto clave, NodoBmas *nodo){
         if(nodo == NULL)
         	return false;
         else{
-			if(clave.Codigo < nodo->claves[1].Codigo){
+			if(clave.ID < nodo->claves[1].ID){
 					k = 0;
 					return esta = false;
 			}
 			else{
 				k = nodo->cuentas;
-				while((k > 1) && (clave.Codigo <nodo->claves[k].Codigo))
+				while((k > 1) && (clave.ID <nodo->claves[k].ID))
 					k--;
 
-				esta = (clave.Codigo == nodo->claves[k].Codigo);
+				esta = (clave.ID == nodo->claves[k].ID);
 			}
 			return esta;
         }
@@ -201,7 +201,7 @@ void FractalTree::print_rec_aux (NodoBmas *nodo){
 	if(!arbolVacio(nodo)){
 		print_rec_aux (nodo->ramas[0]);
 		for(int i = 1; i <= nodo->cuentas; i++){
-			cout << nodo->claves[i].Codigo << " ";
+			cout << nodo->claves[i].ID << " ";
 			print_rec_aux (nodo->ramas[i]);
 		}
 	}
@@ -254,7 +254,7 @@ void FractalTree::ImprimeNivel (NodoBmas *nodo, int con){
 	else{
 		if (con == 1){
 			for(int i= 1; i<= nodo->cuentas; i++){
-				cout<<nodo->claves[i].Codigo<<" ";
+				cout<<nodo->claves[i].ID<<" ";
 			}
 		}
 		else{
@@ -274,7 +274,7 @@ void FractalTree ::Imprimir (){
 		cout<<"Impresion del arbol B+:"<<endl;
 		while (!arbolVacio(aux)){
 			for (int i= 1; i <= aux->cuentas; i++)
-				cout<<aux->claves[i].Codigo<<" ";
+				cout<<aux->claves[i].ID<<" "<<aux->claves[i].Descripcion;
 			aux = aux->shojas;
 		}
 	}
@@ -291,7 +291,7 @@ bool FractalTree::Buscar(int c){
         i = 0;
 
         for(; i <= (nodo->cuentas); i++){
-            if (nodo->claves[i].Codigo == c){
+            if (nodo->claves[i].ID == c){
                 return  true;
             }
         }
@@ -307,7 +307,7 @@ int FractalTree:: Esta(int c){
     while (nodo != NULL){
         i = 0;
         for(; i <= ((nodo->cuentas) - 1); i++){
-            if (nodo->claves[i].Codigo == c)
+            if (nodo->claves[i].ID == c)
             return  true;
         }
         nodo = (*nodo).shojas;
@@ -324,9 +324,9 @@ NodoProducto* FractalTree:: Encontrar(int c){
         i = 0;
 
         for(; i <= (nodo->cuentas); i++){
-            if (nodo->claves[i].Codigo == c){
-                siesta = new NodoProducto (nodo->claves[i].Codigo ,
-				nodo->claves[i].Precio, nodo->claves[i].Descripcion);/////ojo
+            if (nodo->claves[i].ID == c){
+                siesta = new NodoProducto (nodo->claves[i].ID ,
+				nodo->claves[i].Codigo, nodo->claves[i].Descripcion);/////ojo
                 return  siesta;
             }
         }
@@ -349,7 +349,7 @@ void FractalTree::preOrdenRecursivoAux(NodoBmas *raiz){
 
 	if( raiz != NULL ){
 
-		cout << pg->claves[1].Codigo << " ";
+		cout << pg->claves[1].ID << " ";
 
 		// llamada recursiva por la primera hoja
 		this->preOrdenRecursivoAux(pg->ramas[0]);
@@ -361,7 +361,7 @@ void FractalTree::preOrdenRecursivoAux(NodoBmas *raiz){
 
 		for(int i = 2; i <= pg->cuentas; i++){
 
-			cout << pg->claves[i].Codigo  << " ";
+			cout << pg->claves[i].ID  << " ";
 			this->preOrdenRecursivoAux(pg->ramas[i]);
 		}
 	}
@@ -389,11 +389,11 @@ void FractalTree::postOrdenRecursivoAux(NodoBmas *raiz){
 			this->postOrdenRecursivoAux(pg->ramas[1]);
 		}
 
-		cout << pg->claves[1].Codigo << " ";
+		cout << pg->claves[1].ID << " ";
 
 		for(int i = 2; i <= pg->cuentas; i++){
 			this->postOrdenRecursivoAux(pg->ramas[i]);
-			cout << pg->claves[i].Codigo  << " ";
+			cout << pg->claves[i].ID  << " ";
 
 		}
 	}
@@ -412,7 +412,7 @@ void FractalTree::preOrdenIterativoAux(NodoBmas *raiz){
 
 	if( raiz != NULL ){
 
-		cout << pg->claves[1].Codigo << " ";
+		cout << pg->claves[1].ID << " ";
 
 		// llamada recursiva por la primera hoja
 		this->preOrdenIterativoAux(pg->ramas[0]);
@@ -424,7 +424,7 @@ void FractalTree::preOrdenIterativoAux(NodoBmas *raiz){
 
 		for(int i = 2; i <= pg->cuentas; i++){
 
-			cout << pg->claves[i].Codigo  << " ";
+			cout << pg->claves[i].ID  << " ";
 			this->preOrdenIterativoAux(pg->ramas[i]);
 		}
 	}
@@ -451,11 +451,11 @@ void FractalTree::postOrdenIterativoAux(NodoBmas *raiz){
 			this->postOrdenIterativoAux(pg->ramas[1]);
 		}
 
-		cout << pg->claves[1].Codigo << " ";
+		cout << pg->claves[1].ID << " ";
 
 		for(int i = 2; i <= pg->cuentas; i++){
 			this->postOrdenIterativoAux(pg->ramas[i]);
-			cout << pg->claves[i].Codigo  << " ";
+			cout << pg->claves[i].ID  << " ";
 		}
 	}
 }

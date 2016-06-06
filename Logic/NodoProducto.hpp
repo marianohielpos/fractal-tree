@@ -14,13 +14,13 @@ using namespace std;
 //Clase NodoProducto
 class NodoProducto{
 public:
-	int    Codigo;
-	int    Precio;
+	int  ID;
+	string Codigo;
 	string Descripcion;
 
 	// Prototipos
 	NodoProducto ();
-	NodoProducto(int cod, int pres, string des);
+	NodoProducto(int ide, string cod, string des);
 	virtual ~NodoProducto();
 
 };

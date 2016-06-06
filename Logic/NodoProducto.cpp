@@ -9,14 +9,14 @@
 
 // Constructor
 NodoProducto::NodoProducto(){
-	Codigo      = 0;
-	Precio      = 0;
-	Descripcion = "";
+	ID = 0;
+//	Codigo.;
+//	Descripcion = "";
 }
 // Constructor
-NodoProducto::NodoProducto(int cod, int pres, string des){
-	Codigo      = cod;
-	Precio      = pres;
+NodoProducto::NodoProducto(int ide, string cod, string des){
+	ID = ide;
+	Codigo = cod;
 	Descripcion = des;
 }
 
