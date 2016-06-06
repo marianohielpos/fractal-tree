@@ -88,7 +88,7 @@ public:
 		esta    = ea = false;
 		MAX     = 4;
 		MIN     = 2;
-		nivel   =0;
+		nivel   = 0;
 		vsam    = raiz = P = N = Xr = NULL;
 		contT= contTot=bandera = bandera2 = eli =0;
 	}

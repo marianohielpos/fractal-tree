@@ -13,6 +13,7 @@
 // Clase Nodo B+
 class NodoBmas{
    public:
+	int Nivel;
 	NodoProducto claves [5];
 	NodoBmas     *ramas [5];
 	NodoBmas     *shojas;

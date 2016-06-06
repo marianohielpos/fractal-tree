@@ -37,6 +37,7 @@ void FractalTree::insertar (NodoProducto clave){
 	empujar (clave, raiz);
 	if(ea){
 		NodoBmas *nuevo = new NodoBmas();
+		//nuevo->Nivel += raiz->Nivel;
 		nuevo->cuentas = 1;
 		nuevo->claves[1] = mediana;
 		nuevo->ramas [0] = raiz;
@@ -73,6 +74,7 @@ void FractalTree::empujar (NodoProducto clave, NodoBmas *nodo){
 					//cout << "Voy a dividir!" << endl;
 					ea = true;
 					P = nodo;
+					//P->Nivel++;
 					// Usa las variables globales.
 					dividir();
 				}
@@ -130,6 +132,8 @@ void FractalTree::dividir(){
 
 	P->cuentas--;
 	Xr= mde;
+	//nuevo
+	P->Nivel++;
 }
 
 // Metodo que duplica un Nodo
@@ -273,8 +277,10 @@ void FractalTree ::Imprimir (){
 	else{
 		cout<<"Impresion del arbol B+:"<<endl;
 		while (!arbolVacio(aux)){
+			cout<<aux->Nivel<<":";
 			for (int i= 1; i <= aux->cuentas; i++)
-				cout<<aux->claves[i].ID<<" "<<aux->claves[i].Descripcion;
+				//cout<<aux->claves[i].ID<<" "<<aux->claves[i].Descripcion;
+				cout<<aux->claves[i].ID<<" ";
 			aux = aux->shojas;
 		}
 	}
