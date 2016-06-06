@@ -43,9 +43,10 @@ int main ()
 
 
     std::cout << "Nodes are saved and recovered";
-    return 0;
 
     file->saveNode(pNodeOne.get());
+    return 0;
+
     Node* nodeOneRecovered = file->getNode(1);
     verifyEqualness(pNodeOne.get(), nodeOneRecovered);
 

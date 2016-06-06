@@ -26,7 +26,8 @@ std::string* Node::getDescription(){
 
 const char* Node::getStream(){
     std::stringstream ss;
-    ss << *this->getDescription() << *this->getCode() <<  (char)*this->getId();
+    unsigned char end = 255;
+    ss << *this->getDescription() << *this->getCode() <<  (char)*this->getId() << end ;
     const char* p = ss.str().c_str();
     return p;
 }
@@ -57,7 +58,7 @@ Node::Node(char* biteString){
 }
 
 size_t Node::getSize(){
-    return sizeof(this->id) + sizeof(this->code) + sizeof(this->description);
+    return sizeof(this->id) + sizeof(this->code) + sizeof(this->description) + 1;
 }
 
 Node::~Node(void){

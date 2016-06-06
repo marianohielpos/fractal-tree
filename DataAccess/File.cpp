@@ -27,7 +27,7 @@ bool File::initializeControlSector(size_t block){
 
     std::cout << "Initializing\n";
     std::fstream myfile;
-    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::trunc);
+    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::app);
 
     std::cout << "Chequing block\n";
     if( block != 0){
@@ -71,6 +71,10 @@ size_t File::getNodePosition(size_t id){
         }
     }
     return 0;
+}
+
+size_t File::getControlZoneNumber(size_t blockPosition){
+    return ((blockPosition%this->registerSize)*1025) + (blockPosition/this->registerSize)/4 ;
 }
 
 char* File::getZoneControlBlock(size_t zone){
@@ -146,11 +150,15 @@ bool File::saveNode(Node* node){
 
     size_t blockPosition = getNodePosition(*node->getId());
 
+    std::cout << "Block position\n" << blockPosition << "\n";
+
     if( blockPosition == 0 ){
         blockPosition = this->getFreeSpaceDirection();
     }
 
-    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
+    std::cout << "Block position\n" << blockPosition << "\n";
+
+    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::app);
 
     if ( !myfile.is_open() ) {
       return NULL;
@@ -158,9 +166,45 @@ bool File::saveNode(Node* node){
 
     myfile.seekg(blockPosition);
 
+    std::cout << "Node size\n" << node->getSize() << "\n";
+
     myfile.write(node->getStream(), node->getSize() );
 
+    for(size_t i = node->getSize(); i < this->registerSize; i++){
+        myfile.put(0);
+    }
+
+    if( !this->registerId(blockPosition, *node->getId()) ) {
+        return false;
+    }
+
 	return true;
+}
+
+bool File::registerId(size_t blockPosition, size_t id){
+    std::fstream myfile;
+
+    size_t controlZone = getControlZoneNumber(blockPosition);
+
+    std::cout << "blockPosition\n" << blockPosition << "\n";
+
+    std::cout << "controlZone\n" << controlZone << "\n";
+
+    std::cout << "id\n" << id << "\n";
+
+    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
+
+    if( !myfile.is_open() ){
+        return false;
+    }
+
+    myfile.seekg(controlZone);
+
+    myfile.write((char*) &id, 4);
+
+    myfile.close();
+
+    return true;
 }
 
 bool File::setToCeroPosition(size_t position){

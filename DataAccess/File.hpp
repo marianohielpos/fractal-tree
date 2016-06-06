@@ -23,6 +23,10 @@ public:
 
     size_t getFreeSpaceDirection();
 
+    bool registerId(size_t blockPosition, size_t id);
+
+    size_t getControlZoneNumber(size_t blockPosition);
+
     Node* getNode(size_t id);
 
     bool setToCeroPosition(size_t position);
