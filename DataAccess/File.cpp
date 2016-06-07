@@ -194,14 +194,21 @@ bool File::setControlPosition(uint32_t positionInControlZone, bool setToCero){
 
     char controlChar = myfile.get();
 
-    char oneMask = 0x01;
-    char ceroMask = 0xFE;
+    //Set to cero a position
+    char register ceroMask = 0xFE;
+    //Set to one a position
+    char register oneMask = 0x01;
+
+    for(uint32_t i = 0; i < positionInControlZone % 8; i++){
+        ceroMask = ceroMask << (positionInControlZone % 8);
+        oneMask = (oneMask << (positionInControlZone % 8)) | 0x01;
+    }
 
     if( setToCero ){
-        controlChar = controlChar & (ceroMask << (positionInControlZone % 8));
+        controlChar = controlChar & ceroMask;
     }
     else{
-        controlChar = controlChar | (oneMask << (positionInControlZone % 8));
+        controlChar = controlChar | oneMask;
     }
 
     myfile.seekg(positionInControlZone / 8);
