@@ -8,17 +8,17 @@ class Register
 {
 public:
 
-    uint32_t* getId();
+    uint32_t getId();
 
-    std::string* getDescription();
+    const char* getDescription();
 
-    std::string* getCode();
+    const char* getCode();
 
     const char* getStream();
 
     uint32_t getSize();
 
-    void setId(int id);
+    void setId(uint32_t id);
 
     void setCode(const char* cod);
 
@@ -36,9 +36,9 @@ protected:
 
 private:
 
-    uint32_t* id;
-    std::string* code;
-    std::string* description;
+    uint32_t id;
+    std::string code;
+    std::string description;
 
 };
 

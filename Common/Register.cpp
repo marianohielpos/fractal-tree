@@ -12,76 +12,79 @@
 #define FRACTAL_COHEFICIENT
 
 
-uint32_t* Register::getId(){
+uint32_t Register::getId(){
     return this->id;
 }
 
-std::string* Register::getCode(){
-    return this->code;
+const char* Register::getCode(){
+    return this->code.c_str();
 }
 
-std::string* Register::getDescription(){
-    return this->description;
+const char* Register::getDescription(){
+    return this->description.c_str();
 }
 
 const char* Register::getStream(){
     std::stringstream ss;
-    unsigned char end = 255;
-    ss << (char)*this->getId() << *this->getCode() << *this->getDescription() << end ;
+    const char end = 0xFF;
+    ss << this->getId() << this->getCode() << this->getDescription() << end ;
     const char* p = ss.str().c_str();
     return p;
 }
 
 void Register::setCode(const char* code){
-    delete this->code;
-    this->code = new std::string(code);
+    this->code = std::string(code);
 }
 
 void Register::setDescription(const char* description){
-    delete this->description;
-    this->description = new std::string(description);
+    this->description = std::string(description);
 }
 
-void Register::setId(int id){
-    delete this->id;
-    this->id = new uint32_t(id);
+void Register::setId(uint32_t id){
+    this->id = id;
 }
 
 Register::Register(uint32_t id, const char* code, const char* description){
-    this->id = new uint32_t(id);
-    this->code = new std::string(code);
-    this->description = new std::string(description);
+    this->id = id;
+    this->code = std::string(code);
+    this->description = std::string(description);
 }
 
 Register::Register(char* biteString){
 
-    this->id = new uint32_t((uint32_t)biteString[0]);
-    this->code = new std::string(&biteString[1], 3);
+    this->id = (uint32_t)(biteString[3] << 24 | biteString[2] << 16 | biteString[1] << 8 | biteString[0]);
+    std::cout << (uint32_t)biteString[0] << std::endl;
+    std::cout << (uint32_t)biteString[1] << std::endl;
+    std::cout << (uint32_t)biteString[2] << std::endl;
+    std::cout << (uint32_t)biteString[3] << std::endl;
+    std::cout << (uint32_t)biteString[4] << std::endl;
+
+    std::cout << (uint32_t)biteString[5] << std::endl;
+
+    std::cout << (uint32_t)biteString[6] << std::endl;
+
+    std::cout << (uint32_t)biteString[7] << std::endl;
+
+    std::cout << (uint32_t)biteString[8] << std::endl;
+
+    this->code = std::string(&biteString[1], 3);
 
     uint32_t i = 4;
 
-    for(; biteString[i] != 0xFF ; i++);
+    for(; (char)biteString[i] != (char)0xFF ; i++);
 
-    std::cout << "Break point" << std::endl;
-    std::cout << (int)i << std::endl;
-
-    this->description = new std::string(4, i);
-
-    std::cout << this->description << std::endl;
+    this->description = std::string(4, i);
 }
 
 Register::Register(Register* _register){
-    this->id = new uint32_t(*_register->id);
-    this->code = new std::string(*_register->code);
-    this->description = new std::string(*_register->description);
+    this->id = _register->id;
+    this->code = std::string(_register->code);
+    this->description = std::string(_register->description);
 }
 
 uint32_t Register::getSize(){
-    return (sizeof(*this->id) + sizeof(*this->code) + sizeof(*this->description) + 1);
+    return (sizeof(this->id) + sizeof(this->code) + sizeof(this->description) + 1);
 }
 
 Register::~Register(void){
-    delete this->id;
-    delete this->code;
-    delete this->description;
 }

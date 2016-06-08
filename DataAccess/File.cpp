@@ -57,7 +57,6 @@ uint32_t File::getControlZoneNumber(uint32_t blockPosition){
 
 char* File::getZoneControlBlock(uint32_t zone){
     uint32_t blockPosition = this->getMappingZonePosition(zone);
-    std::cout << "mappingzone  " << blockPosition   << std::endl;
 
     return this->getBlock(blockPosition);
 }
@@ -109,8 +108,7 @@ uint32_t File::getFreeSpaceDirection(){
     for( uint32_t i = 0; i < this->blockSize; i++){
         character = block[i];
         for( uint32_t j = 0; j < 8; j++ ){
-            std::cout << (uint32_t) character << "\n" << j << "\n" << std::endl;
-
+            
             if ( !(character & 0x01) ) {
                 return (i * 8 + j);
             }

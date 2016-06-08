@@ -65,13 +65,13 @@ TEST(fileTest, buildAndRecover){
 
     std::unique_ptr<Node> pNodeOneRecovered(file->getNode(position));
 
-    std::cout << *pNodeOneRecovered->getRegister(0)->getCode() << std::endl;
-    std::cout << *pNodeOneRecovered->getRegister(0)->getDescription() << std::endl;
-    std::cout << *pNodeOneRecovered->getRegister(0)->getId() << std::endl;
+    std::cout << pNodeOneRecovered->getRegister(0)->getCode() << std::endl;
+    std::cout << pNodeOneRecovered->getRegister(0)->getDescription() << std::endl;
+    std::cout << pNodeOneRecovered->getRegister(0)->getId() << std::endl;
 
-    ASSERT_STREQ(codeOne, (*pNodeOneRecovered->getRegister(0)->getCode()).c_str());
-    ASSERT_STREQ(descriptionOne, (*pNodeOneRecovered->getRegister(0)->getDescription()).c_str());
-    ASSERT_EQ(1, *pNodeOneRecovered->getRegister(0)->getId());
+    ASSERT_STREQ(codeOne, (pNodeOneRecovered->getRegister(0)->getCode()));
+    ASSERT_STREQ(descriptionOne, (pNodeOneRecovered->getRegister(0)->getDescription()));
+    ASSERT_EQ(1, pNodeOneRecovered->getRegister(0)->getId());
 
     return;
 
