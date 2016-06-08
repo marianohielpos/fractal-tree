@@ -24,7 +24,7 @@ public:
 
     uint32_t getFreeSpaceDirection();
 
-    bool registerId(uint32_t blockPosition, uint32_t id);
+    bool _registerId(uint32_t blockPosition, uint32_t id);
 
     uint32_t getControlZoneNumber(uint32_t blockPosition);
 

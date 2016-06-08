@@ -4,6 +4,8 @@
 *
 */
 
+#include "Register.hpp"
+
 #include "Node.hpp"
 #include <string>
 #include <iostream>
@@ -12,57 +14,30 @@
 #define FRACTAL_COHEFICIENT
 
 
-uint32_t* Node::getId(){
-    return this->id;
+void Node::setRegister(Register* _register){
+    this->_register = new Register(_register);
 }
 
-std::string* Node::getCode(){
-    return this->code;
-}
-
-std::string* Node::getDescription(){
-    return this->description;
+Register* Node::getRegister(uint32_t* id){
+    return this->_register;
 }
 
 const char* Node::getStream(){
-    std::stringstream ss;
-    unsigned char end = 255;
-    ss << *this->getDescription() << *this->getCode() << end ;
-    const char* p = ss.str().c_str();
-    return p;
-}
-
-void Node::setCode(const char* code){
-    delete this->code;
-    this->code = new std::string(code);
-}
-
-void Node::setDescription(const char* description){
-    delete this->description;
-    this->description = new std::string(description);
-}
-
-void Node::setId(int id){
-    delete this->id;
-    this->id = new uint32_t(id);
-}
-
-Node::Node(uint32_t id, const char* code, const char* description){
-    this->id = new uint32_t(id);
-    this->code = new std::string(code);
-    this->description = new std::string(description);
-}
-
-Node::Node(char* biteString){
     //TODO
+    return this->_register->getStream();
 }
 
 uint32_t Node::getSize(){
-    return (sizeof(*this->code) + sizeof(*this->description) + 1);
+    return this->_register->getSize();
+}
+
+Node::Node(){
+}
+
+Node::Node(char* biteStream){
+    this->_register = new Register(biteStream);
 }
 
 Node::~Node(void){
-    delete this->id;
-    delete this->code;
-    delete this->description;
+    delete this->_register;
 }

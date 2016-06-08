@@ -2,7 +2,7 @@
 *  First block: Metadata. 1 byte per node
 *  Other blocks: Data
 *  Free space control: Bytemap, representing the percentage of use of each block
-*  Each register is finished with a EOF
+*  Each _register is finished with a EOF
 */
 #include "File.hpp"
 #include "../Common/Node.hpp"
@@ -67,6 +67,8 @@ char* File::getBlock(uint32_t blockPosition){
     char* memblock;
     std::fstream myfile;
 
+    uint32_t absoluteBlockPosition = blockPosition * this->blockSize;
+
     myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
 
     if ( !myfile.is_open() ) {
@@ -74,7 +76,7 @@ char* File::getBlock(uint32_t blockPosition){
     }
 
     memblock = new char [this->blockSize];
-    myfile.seekg(0);
+    myfile.seekg(absoluteBlockPosition);
     myfile.read(memblock, this->blockSize);
     myfile.close();
 

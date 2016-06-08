@@ -1,10 +1,10 @@
 #include <string>
 #include <stdint.h>
 
-#ifndef _REGISTRY_H_
-#define _REGISTRY_H_
+#ifndef _REGISTER_H_
+#define _REGISTER_H_
 
-class Registry
+class Register
 {
 public:
 
@@ -24,11 +24,13 @@ public:
 
     void setDescription(const char* description);
 
-    Registry(uint32_t id, const char* cod, const char* description);
+    Register(uint32_t id, const char* cod, const char* description);
 
-    Registry(char* biteStream);
+    Register(char* biteStream);
 
-    ~Registry(void);
+    Register(Register* _register);
+
+    ~Register(void);
 
 protected:
 
@@ -40,4 +42,4 @@ private:
 
 };
 
-#endif // _REGISTRY_H_
+#endif // _REGISTER_H_

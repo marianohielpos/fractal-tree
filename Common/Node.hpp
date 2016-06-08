@@ -4,27 +4,22 @@
 #ifndef _NODE_H_
 #define _NODE_H_
 
+#include "Register.hpp"
+
+
 class Node
 {
 public:
 
-    uint32_t* getId();
+    void setRegister(Register* _register);
 
-    std::string* getDescription();
-
-    std::string* getCode();
+    Register* getRegister(uint32_t* id);
 
     const char* getStream();
 
     uint32_t getSize();
 
-    void setId(int id);
-
-    void setCode(const char* cod);
-
-    void setDescription(const char* description);
-
-    Node(uint32_t id, const char* cod, const char* description);
+    Node();
 
     Node(char* biteStream);
 
@@ -33,11 +28,7 @@ public:
 protected:
 
 private:
-
-    uint32_t* id;
-    std::string* code;
-    std::string* description;
-
+    Register* _register;
 };
 
 #endif // _NODE_H_

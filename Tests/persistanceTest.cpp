@@ -3,39 +3,55 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include "gtest/gtest.h"
+
 
 #define PATH "./test.bin"
 
-void verifyEqualness(Node* a,Node* b){
-
-    if( a->getId() == b->getId() ){
-           std::cout << "OK";
-           return;
-       }
-
-    std::cout << "Fail";
-    return;
-}
-
-int main ()
-{
+TEST(fileTest, buildAndRecover){
     std::cout << "Starting \n";
-    char* COD1 = (char*)"111";
-    char* COD2 = (char*)"222";
-    char* COD3 = (char*)"333";
-    char* COD4 = (char*)"444";
+    char* codeOne = (char*)"111";
+    char* codeTwo = (char*)"222";
+    char* codeThree = (char*)"333";
+    char* codeFour = (char*)"444";
+
+    char* codeFive = (char*)"111";
+    char* codeSix = (char*)"222";
+    char* codeSeven = (char*)"333";
+    char* codeEight = (char*)"444";
+
 
     char* descriptionOne = (char*)"descriptionOne";
     char* descriptionTwo = (char*)"descriptionTwo";
     char* descriptionThree = (char*)"descriptionThree";
     char* descriptionFour = (char*)"descriptionFour";
 
-    std::cout << "Creating nodes \n";
-    std::unique_ptr<Node> pNodeOne(new Node(1, COD1, descriptionOne));
-    std::unique_ptr<Node> pNodeTwo(new Node(2, COD2, descriptionTwo));
-    std::unique_ptr<Node> pNodeThree(new Node(3, COD3, descriptionThree));
-    std::unique_ptr<Node> pNodeFour(new Node(4, COD4, descriptionFour));
+    char* descriptionFive = (char*)"descriptionFive";
+    char* descriptionSix = (char*)"descriptionSix";
+    char* descriptionSeven = (char*)"descriptionSeven";
+    char* descriptionEight = (char*)"descriptionEight";
 
+    std::cout << "Creating _registers \n";
+    std::unique_ptr<Register> pRegisterOne(new Register(1, codeOne, descriptionOne));
+    std::unique_ptr<Register> pRegisterTwo(new Register(2, codeTwo, descriptionTwo));
+    std::unique_ptr<Register> pRegisterThree(new Register(3, codeThree, descriptionThree));
+    std::unique_ptr<Register> pRegisterFour(new Register(4, codeFour, descriptionFour));
+
+    std::unique_ptr<Register> pRegisterFive(new Register(1, codeFive, descriptionFive));
+    std::unique_ptr<Register> pRegisterSix(new Register(2, codeSix, descriptionSix));
+    std::unique_ptr<Register> pRegisterSeven(new Register(3, codeSeven, descriptionSeven));
+    std::unique_ptr<Register> pRegisterEight(new Register(4, codeEight, descriptionEight));
+
+
+    std::cout << "Creating nodes \n";
+    std::unique_ptr<Node> pNodeOne(new Node());
+    std::unique_ptr<Node> pNodeTwo(new Node());
+    std::unique_ptr<Node> pNodeThree(new Node());
+
+
+    std::cout << "Saving _registers in nodes \n";
+
+    pNodeOne->setRegister(pRegisterOne.get());
 
     std::cout << "Creating file \n";
 
@@ -44,38 +60,39 @@ int main ()
 
     std::cout << "Nodes are saved and recovered\n";
 
-    file->saveNode(pNodeOne.get());
 
-    return 0;
+    uint32_t position = file->saveNode(pNodeOne.get());
+
+    std::unique_ptr<Node> pNodeOneRecovered(file->getNode(position));
+
+    std::cout << *pNodeOneRecovered->getRegister(0)->getCode() << std::endl;
+    std::cout << *pNodeOneRecovered->getRegister(0)->getDescription() << std::endl;
+    std::cout << *pNodeOneRecovered->getRegister(0)->getId() << std::endl;
+
+    ASSERT_STREQ(codeOne, (*pNodeOneRecovered->getRegister(0)->getCode()).c_str());
+    ASSERT_STREQ(descriptionOne, (*pNodeOneRecovered->getRegister(0)->getDescription()).c_str());
+    ASSERT_EQ(1, *pNodeOneRecovered->getRegister(0)->getId());
+
+    return;
 
     file->saveNode(pNodeTwo.get());
     file->saveNode(pNodeThree.get());
 
-
-    file->saveNode(pNodeFour.get());
-
-
     Node* nodeOneRecovered = file->getNode(1);
-    verifyEqualness(pNodeOne.get(), nodeOneRecovered);
 
     Node* nodeTwoRecovered = file->getNode(2);
-    verifyEqualness(pNodeTwo.get(), nodeOneRecovered);
 
     Node* nodeThreeRecovered = file->getNode(3);
-    verifyEqualness(pNodeThree.get(), nodeOneRecovered);
 
     Node* nodeFourRecovered = file->getNode(4);
-    verifyEqualness(pNodeFour.get(), nodeOneRecovered);
 
 
     std::cout << "Nodes are modifyed";
 
     Node* nodeOne = file->getNode(1);
-    nodeOne->setDescription("Asd");
     file->saveNode(nodeOne);
 
     nodeOneRecovered = file->getNode(1);
-    verifyEqualness(nodeOne, nodeOneRecovered);
 
 
     std::cout << "Nodes are deleted";
@@ -85,7 +102,7 @@ int main ()
 
     if( nodeOneRecovered != NULL ){
         std::cout << "Fail";
-        return 1;
+        return;
     }
 
     file->deleteNode(1);
@@ -101,13 +118,20 @@ int main ()
     }
     else{
         std::cout << "Fail";
-        return 1;
+        return;
     }
 
     delete nodeOneRecovered;
     delete nodeTwoRecovered;
     delete nodeThreeRecovered;
     delete nodeFourRecovered;
+}
 
-    return 0;
+
+int main(int argc, char *argv[])
+{
+
+    ::testing::InitGoogleTest(&argc, argv);
+
+    return RUN_ALL_TESTS();
 }
