@@ -17,7 +17,7 @@ File::File(const char* pathToFile, uint32_t blockSize){
     this->blockSize = blockSize;
     this->pathToFile = std::string(pathToFile);
 
-    if ( this->checkFileExistance(pathToFile))
+    if ( !this->checkFileExistance(pathToFile))
     {
         std::cout << "Initializing file" << std::endl;
         this->openFile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::app);
@@ -36,7 +36,9 @@ File::~File(){
 
 bool File::checkFileExistance(const char* pathToFile){
   struct stat buffer;
-  return (stat (pathToFile, &buffer) == 0);
+
+  std::cout << stat (pathToFile, &buffer) << std::endl;
+  return (stat (pathToFile, &buffer)) == 0;
 }
 
 
