@@ -9,44 +9,46 @@
 #include <iostream>
 #include <fstream>
 #include <string.h>
+#include <sys/stat.h>
 
-File::File(std::string pathToFile, uint32_t blockSize){
+
+File::File(const char* pathToFile, uint32_t blockSize){
 
     this->blockSize = blockSize;
     this->pathToFile = std::string(pathToFile);
 
-    if ( !std::ifstream(this->pathToFile.c_str()))
+    if ( this->checkFileExistance(pathToFile))
     {
+        std::cout << "Initializing file" << std::endl;
+        this->openFile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::app);
         this->initializeControlSector(0);
     }
-    std::cout << "Finished\n";
+    else{
+        std::cout << "Opening existing file" << std::endl;
+        this->openFile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::app);
+    }
 }
+
+File::~File(){
+    this->openFile.close();
+}
+
+
+bool File::checkFileExistance(const char* pathToFile){
+  struct stat buffer;
+  return (stat (pathToFile, &buffer) == 0);
+}
+
 
 bool File::initializeControlSector(uint32_t block){
 
-    std::cout << "Initializing\n";
-    std::fstream myfile;
-    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::app);
-
-    std::cout << "Chequing block\n";
-    if( block != 0){
-        myfile.seekg(this->getMappingZonePosition(block));
-    }
-
-    std::cout << "Chequing if file is open\n";
-    if( !myfile.is_open() ){
-        return false;
-    }
+    this->openFile.seekg(this->getMappingZonePosition(block));
 
     std::cout << "Setting to cero\n";
     for(uint32_t counter = 0; counter < this->blockSize; counter++){
-        myfile.put(0);
+        this->openFile.put(0);
     }
 
-    std::cout << "Closing file\n";
-    myfile.close();
-
-    std::cout << "Return\n";
     return true;
 }
 
@@ -64,20 +66,12 @@ char* File::getZoneControlBlock(uint32_t zone){
 char* File::getBlock(uint32_t blockPosition){
 
     char* memblock;
-    std::fstream myfile;
 
     uint32_t absoluteBlockPosition = blockPosition * this->blockSize;
 
-    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
-
-    if ( !myfile.is_open() ) {
-      return NULL;
-    }
-
     memblock = new char [this->blockSize];
-    myfile.seekg(absoluteBlockPosition);
-    myfile.read(memblock, this->blockSize);
-    myfile.close();
+    this->openFile.seekg(absoluteBlockPosition);
+    this->openFile.read(memblock, this->blockSize);
 
     return memblock;
 }
@@ -88,13 +82,11 @@ uint32_t File::getMappingZonePosition(uint32_t zone){
 
 uint32_t File::getFileSize(){
     std::streampos begin, end;
-    std::ifstream myfile(this->pathToFile.c_str(), std::ios::binary);
 
-    begin = myfile.tellg();
-    myfile.seekg(0, std::ios::end);
-    end = myfile.tellg();
-
-    myfile.close();
+    this->openFile.seekg(0);
+    begin = this->openFile.tellg();
+    this->openFile.seekg(0, std::ios::end);
+    end = this->openFile.tellg();
 
     return (uint32_t)(end-begin);
 }
@@ -108,7 +100,7 @@ uint32_t File::getFreeSpaceDirection(){
     for( uint32_t i = 0; i < this->blockSize; i++){
         character = block[i];
         for( uint32_t j = 0; j < 8; j++ ){
-            
+
             if ( !(character & 0x01) ) {
                 return (i * 8 + j);
             }
@@ -142,19 +134,15 @@ uint32_t File::saveNode(Node* node){
 
     std::cout << "Block position found: " << blockPosition << std::endl;
 
-    std::fstream myfile;
-
-    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
-
-    if ( !myfile.is_open() ) {
-      return 0;
-    }
-
     this->setControlPosition(positionInControlZone, false);
 
-    myfile.seekg(blockPosition);
+    this->openFile.seekg(blockPosition);
 
-    myfile.write(node->getStream(), node->getSize() );
+    char buffer[node->getSize()];
+
+    node->getStream(buffer, node->getSize());
+
+    this->openFile.write(buffer, node->getSize() );
 
     return (positionInControlZone + 1);
 }
@@ -163,36 +151,24 @@ uint32_t File::saveNode(Node* node){
 
 bool File::saveNode(Node* node, uint32_t offset){
 
-    std::fstream myfile;
-
     uint32_t blockPosition = offset * this->blockSize;
 
-    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
+    this->openFile.seekg(blockPosition);
 
-    if ( !myfile.is_open() ) {
-      return NULL;
-    }
+    char buffer[node->getSize()];
 
-    myfile.seekg(blockPosition);
+    node->getStream(buffer, node->getSize());
 
-    myfile.write(node->getStream(), node->getSize() );
+    this->openFile.write(buffer, node->getSize() );
 
 	return true;
 }
 
 bool File::setControlPosition(uint32_t positionInControlZone, bool setToCero){
 
-    std::fstream myfile;
+    this->openFile.seekg(positionInControlZone / 8);
 
-    myfile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
-
-    if( !myfile ){
-        return false;
-    }
-
-    myfile.seekg(positionInControlZone / 8);
-
-    char controlChar = myfile.get();
+    char controlChar = this->openFile.get();
 
     //Set to cero a position
     char register ceroMask = 0xFE;
@@ -211,11 +187,9 @@ bool File::setControlPosition(uint32_t positionInControlZone, bool setToCero){
         controlChar = controlChar | oneMask;
     }
 
-    myfile.seekg(positionInControlZone / 8);
+    this->openFile.seekg(positionInControlZone / 8);
 
-    myfile.put(controlChar);
-
-    myfile.close();
+    this->openFile.put(controlChar);
 
     return true;
 

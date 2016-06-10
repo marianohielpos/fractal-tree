@@ -11,33 +11,33 @@
 #include <iostream>
 #include <sstream>
 
-#define FRACTAL_COHEFICIENT
+#define FRACTAL_COHEFICIENT 8
 
 
-void Node::setRegister(Register* _register){
-    this->_register = new Register(_register);
+void Node::setRegister(Register& _register){
+    this->_register = Register(_register);
 }
 
-Register* Node::getRegister(uint32_t* id){
+Register Node::getRegister(uint32_t* id){
     return this->_register;
 }
 
-const char* Node::getStream(){
-    //TODO
-    return this->_register->getStream();
+bool Node::getStream(char* buffer, uint32_t size){
+
+    return this->_register.getStream(buffer, size);
 }
 
 uint32_t Node::getSize(){
-    return this->_register->getSize();
+    return this->_register.getSize();
+}
+
+Node::Node(const char* byteStream)
+    : _register(byteStream){}
+
+
+Node::~Node(void){
 }
 
 Node::Node(){
-}
-
-Node::Node(char* biteStream){
-    this->_register = new Register(biteStream);
-}
-
-Node::~Node(void){
-    delete this->_register;
+    Register _register;
 }

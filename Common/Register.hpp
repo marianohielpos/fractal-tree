@@ -14,7 +14,7 @@ public:
 
     const char* getCode();
 
-    const char* getStream();
+    bool getStream(char*, uint32_t size);
 
     uint32_t getSize();
 
@@ -26,9 +26,11 @@ public:
 
     Register(uint32_t id, const char* cod, const char* description);
 
-    Register(char* biteStream);
+    Register(const char* byteStream);
 
-    Register(Register* _register);
+    Register(const Register& _register);
+
+    Register();
 
     ~Register(void);
 

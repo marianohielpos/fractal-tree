@@ -4,7 +4,8 @@
 #include <iostream>
 #include "../Common/Node.hpp"
 #include <stdint.h>
-
+#include <fstream>
+#include <sys/stat.h>
 
 class File
 {
@@ -40,13 +41,19 @@ public:
 
     uint32_t getMappingZone(uint32_t zone);
 
-    File(std::string pathToFile, uint32_t blockSize);
+    File(const char* pathToFile, uint32_t blockSize);
+
+    ~File();
 
 protected:
 
 private:
+
+    bool checkFileExistance(const char* pathToFile);
+
     uint32_t blockSize;
     std::string pathToFile;
+    std::fstream openFile;
 };
 
 #endif // _FILE_H_

@@ -11,24 +11,24 @@ class Node
 {
 public:
 
-    void setRegister(Register* _register);
+    void setRegister(Register& _register);
 
-    Register* getRegister(uint32_t* id);
+    Register getRegister(uint32_t* id);
 
-    const char* getStream();
+    bool getStream(char* buffer, uint32_t size);
 
     uint32_t getSize();
 
     Node();
 
-    Node(char* biteStream);
+    Node(const char* byteStream);
 
     ~Node(void);
 
 protected:
 
 private:
-    Register* _register;
+    Register _register;
 };
 
 #endif // _NODE_H_

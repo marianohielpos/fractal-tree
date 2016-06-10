@@ -1,16 +1,10 @@
-/*
-*   The responsability of releasing the dinamic memory of the node is given
-*   to the one who is the last one that uses the node.
-*
-*/
-
 #include "Register.hpp"
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 #define FRACTAL_COHEFICIENT
-
 
 uint32_t Register::getId(){
     return this->id;
@@ -24,12 +18,25 @@ const char* Register::getDescription(){
     return this->description.c_str();
 }
 
-const char* Register::getStream(){
-    std::stringstream ss;
-    const char end = 0xFF;
-    ss << this->getId() << this->getCode() << this->getDescription() << end ;
-    const char* p = ss.str().c_str();
-    return p;
+bool Register::getStream(char* buffer, uint32_t size){
+
+    if( !buffer || this->getSize() > size){
+        return false;
+    }
+
+    uint32_t offset = 0;
+
+    memcpy(buffer, &this->id, sizeof(uint32_t));
+
+    offset += sizeof(uint32_t);
+
+    strcpy(buffer + offset, this->getCode());
+
+    offset += strlen(this->getCode());
+
+    strcpy(buffer + offset, this->getDescription());
+
+    return true;
 }
 
 void Register::setCode(const char* code){
@@ -50,41 +57,39 @@ Register::Register(uint32_t id, const char* code, const char* description){
     this->description = std::string(description);
 }
 
-Register::Register(char* biteString){
+Register::Register(const char* byteString){
 
-    this->id = (uint32_t)(biteString[3] << 24 | biteString[2] << 16 | biteString[1] << 8 | biteString[0]);
-    std::cout << (uint32_t)biteString[0] << std::endl;
-    std::cout << (uint32_t)biteString[1] << std::endl;
-    std::cout << (uint32_t)biteString[2] << std::endl;
-    std::cout << (uint32_t)biteString[3] << std::endl;
-    std::cout << (uint32_t)biteString[4] << std::endl;
+    uint32_t offset = 0;
 
-    std::cout << (uint32_t)biteString[5] << std::endl;
+    memcpy(&this->id, byteString, sizeof(uint32_t));
 
-    std::cout << (uint32_t)biteString[6] << std::endl;
+    offset += sizeof(uint32_t);
+    uint32_t i = offset;
 
-    std::cout << (uint32_t)biteString[7] << std::endl;
+    for(; (char)byteString[i] != '\0' ; ++i);
 
-    std::cout << (uint32_t)biteString[8] << std::endl;
+    this->code = std::string(&byteString[offset], i - offset);
 
-    this->code = std::string(&biteString[1], 3);
+    offset = i;
 
-    uint32_t i = 4;
+    for(; (char)byteString[i] != '\0' ; ++i);
 
-    for(; (char)biteString[i] != (char)0xFF ; i++);
+    this->description = std::string(offset, i);
 
-    this->description = std::string(4, i);
 }
 
-Register::Register(Register* _register){
-    this->id = _register->id;
-    this->code = std::string(_register->code);
-    this->description = std::string(_register->description);
-}
+Register::Register(const Register& _register)
+    : id(_register.id),
+    code(_register.code),
+    description(_register.description){}
 
 uint32_t Register::getSize(){
-    return (sizeof(this->id) + sizeof(this->code) + sizeof(this->description) + 1);
+    //Plust two because of the '\0' in the strings
+    return (sizeof(this->id) + strlen(this->code.c_str()) + strlen(this->description.c_str()) + 2);
 }
 
 Register::~Register(void){
+}
+
+Register::Register(){
 }
