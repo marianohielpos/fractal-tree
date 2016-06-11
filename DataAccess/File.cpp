@@ -20,12 +20,17 @@ File::File(const char* pathToFile, uint32_t blockSize){
     if ( !this->checkFileExistance(pathToFile))
     {
         std::cout << "Initializing file" << std::endl;
-        this->openFile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::app);
+        this->openFile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::trunc);
+        if ( (this->openFile.rdstate() & std::ifstream::failbit ) != 0 )
+            std::cerr << "Error opening file \n";
         this->initializeControlSector(0);
     }
     else{
         std::cout << "Opening existing file" << std::endl;
-        this->openFile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary | std::ios::app);
+        this->openFile.open(this->pathToFile.c_str(), std::ios::out | std::ios::in | std::ios::binary);
+        if ( (this->openFile.rdstate() & std::ifstream::failbit ) != 0 )
+            std::cerr << "Error opening file \n";
+
     }
 }
 
@@ -37,7 +42,6 @@ File::~File(){
 bool File::checkFileExistance(const char* pathToFile){
   struct stat buffer;
 
-  std::cout << stat (pathToFile, &buffer) << std::endl;
   return (stat (pathToFile, &buffer)) == 0;
 }
 
@@ -132,7 +136,7 @@ uint32_t File::saveNode(Node* node){
 
     uint32_t positionInControlZone = this->getFreeSpaceDirection();
 
-    unsigned long long blockPosition = (positionInControlZone + 1) * this->blockSize;
+    uint32_t blockPosition = (positionInControlZone + 1) * this->blockSize;
 
     std::cout << "Block position found: " << blockPosition << std::endl;
 
@@ -172,6 +176,8 @@ bool File::setControlPosition(uint32_t positionInControlZone, bool setToCero){
 
     char controlChar = this->openFile.get();
 
+    this->openFile.seekg(positionInControlZone / 8);
+
     //Set to cero a position
     char register ceroMask = 0xFE;
     //Set to one a position
@@ -189,9 +195,9 @@ bool File::setControlPosition(uint32_t positionInControlZone, bool setToCero){
         controlChar = controlChar | oneMask;
     }
 
-    this->openFile.seekg(positionInControlZone / 8);
-
     this->openFile.put(controlChar);
+
+    this->openFile.seekg(positionInControlZone / 8);
 
     return true;
 

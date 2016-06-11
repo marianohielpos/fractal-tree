@@ -11,11 +11,11 @@ uint32_t Register::getId(){
 }
 
 const char* Register::getCode(){
-    return this->code.c_str();
+    return this->code.c_str() + '\0';
 }
 
 const char* Register::getDescription(){
-    return this->description.c_str();
+    return this->description.c_str() + '\0';
 }
 
 bool Register::getStream(char* buffer, uint32_t size){
@@ -32,7 +32,8 @@ bool Register::getStream(char* buffer, uint32_t size){
 
     strcpy(buffer + offset, this->getCode());
 
-    offset += strlen(this->getCode());
+    //Plus null character
+    offset += strlen(this->getCode()) + 1;
 
     strcpy(buffer + offset, this->getDescription());
 
@@ -70,11 +71,15 @@ Register::Register(const char* byteString){
 
     this->code = std::string(&byteString[offset], i - offset);
 
+    i += 1;
+
     offset = i;
 
     for(; (char)byteString[i] != '\0' ; ++i);
 
-    this->description = std::string(offset, i);
+    std::cout << i << std::endl;
+
+    this->description = std::string(&byteString[offset], i);
 
 }
 
