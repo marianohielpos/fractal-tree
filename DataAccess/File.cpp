@@ -2,10 +2,12 @@
 *  First block: Metadata. 1 byte per node
 *  Other blocks: Data
 *  Free space control: Bytemap, representing the percentage of use of each block
-*  Each _register is finished with a EOF
+*  Each registers is finished with a EOF
 */
 #include "File.hpp"
-#include "../Common/Node.hpp"
+#include "../Common/InnerNode.hpp"
+#include "../Common/LeafNode.hpp"
+#include "./NodeFactory.hpp"
 #include <iostream>
 #include <fstream>
 #include <string.h>
@@ -16,6 +18,8 @@ File::File(const char* pathToFile, uint32_t blockSize){
 
     this->blockSize = blockSize;
     this->pathToFile = std::string(pathToFile);
+
+    this->factory = NodeFactory();
 
     if ( !this->checkFileExistance(pathToFile))
     {
@@ -46,9 +50,13 @@ bool File::checkFileExistance(const char* pathToFile){
 }
 
 
-bool File::initializeControlSector(uint32_t block){
+bool File::initializeControlSector(uint32_t controlSectorNumber){
+    return this->setToCeroSector(this->getMappingZonePosition(controlSectorNumber));
+}
 
-    this->openFile.seekg(this->getMappingZonePosition(block));
+bool File::setToCeroSector(uint32_t sectorOffset){
+
+    this->openFile.seekg(sectorOffset);
 
     std::cout << "Setting to cero\n";
     for(uint32_t counter = 0; counter < this->blockSize; counter++){
@@ -63,10 +71,8 @@ uint32_t File::getControlZoneNumber(uint32_t blockPosition){
     return (blockPosition/this->blockSize -1);
 }
 
-char* File::getZoneControlBlock(uint32_t zone){
-    uint32_t blockPosition = this->getMappingZonePosition(zone);
-
-    return this->getBlock(blockPosition);
+char* File::getZoneControlBlock(uint32_t controlSectorNumber){
+    return this->getBlock(this->getMappingZonePosition(controlSectorNumber));
 }
 
 char* File::getBlock(uint32_t blockPosition){
@@ -125,7 +131,7 @@ Node* File::getNode(uint32_t offset){
 
     memblock = this->getBlock(offset);
 
-    Node* node = new Node(memblock);
+    Node* node = this->factory.buildNode(memblock);
 
     delete memblock;
 
@@ -136,6 +142,8 @@ uint32_t File::saveNode(Node* node){
 
     uint32_t positionInControlZone = this->getFreeSpaceDirection();
 
+    std::cout << "position in control zone: " << positionInControlZone << std::endl;
+
     uint32_t blockPosition = (positionInControlZone + 1) * this->blockSize;
 
     std::cout << "Block position found: " << blockPosition << std::endl;
@@ -144,11 +152,17 @@ uint32_t File::saveNode(Node* node){
 
     this->openFile.seekg(blockPosition);
 
-    char buffer[node->getSize()];
+    uint32_t nodeSize = node->getSize();
 
-    node->getStream(buffer, node->getSize());
+    char buffer[nodeSize];
 
-    this->openFile.write(buffer, node->getSize() );
+    std::cout << "Node size: " << node->getSize() << std::endl;
+    std::cout << "Node type: " << node->getType() << std::endl;
+
+
+    node->getStream(buffer, nodeSize);
+
+    this->openFile.write(buffer, nodeSize );
 
     return (positionInControlZone + 1);
 }
@@ -184,8 +198,8 @@ bool File::setControlPosition(uint32_t positionInControlZone, bool setToCero){
     char register oneMask = 0x01;
 
     for(uint32_t i = 0; i < positionInControlZone % 8; i++){
-        ceroMask = ceroMask << (positionInControlZone % 8);
-        oneMask = (oneMask << (positionInControlZone % 8)) | 0x01;
+        ceroMask = (ceroMask << 1) | 0x01;
+        oneMask = oneMask << 1;
     }
 
     if( setToCero ){
@@ -195,14 +209,15 @@ bool File::setControlPosition(uint32_t positionInControlZone, bool setToCero){
         controlChar = controlChar | oneMask;
     }
 
-    this->openFile.put(controlChar);
+    std::cout << "Control char " << (uint32_t)controlChar << std::endl;
+    std::cout << "Position " << (uint32_t)positionInControlZone << std::endl;
 
-    this->openFile.seekg(positionInControlZone / 8);
+    this->openFile.put(controlChar);
 
     return true;
 
 }
 
 bool File::deleteNode(uint32_t offset){
-    return this->setControlPosition(offset -1, false);
+    return this->setControlPosition(offset, true) && this->setToCeroSector(offset);
 }

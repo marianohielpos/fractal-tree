@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "../Common/Node.hpp"
+#include "./NodeFactory.hpp"
 #include <stdint.h>
 #include <fstream>
 #include <sys/stat.h>
@@ -11,21 +12,23 @@ class File
 {
 public:
 
-    bool initializeControlSector(uint32_t zone);
+    bool initializeControlSector(uint32_t controlSectorNumber);
 
     uint32_t getNodePosition(uint32_t id);
 
-    char* getZoneControlBlock(uint32_t zone);
+    char* getZoneControlBlock(uint32_t controlSectorNumber);
 
     char* getBlock(uint32_t blockPosition);
 
-    uint32_t getMappingZonePosition(uint32_t zone);
+    bool setToCeroSector(uint32_t sector);
+
+    uint32_t getMappingZonePosition(uint32_t controlSectorNumber);
 
     uint32_t getFileSize();
 
     uint32_t getFreeSpaceDirection();
 
-    bool _registerId(uint32_t blockPosition, uint32_t id);
+    bool registersId(uint32_t blockPosition, uint32_t id);
 
     uint32_t getControlZoneNumber(uint32_t blockPosition);
 
@@ -54,6 +57,9 @@ private:
     uint32_t blockSize;
     std::string pathToFile;
     std::fstream openFile;
+
+    NodeFactory factory;
+
 };
 
 #endif // _FILE_H_

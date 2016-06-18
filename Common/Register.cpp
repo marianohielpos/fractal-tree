@@ -83,10 +83,10 @@ Register::Register(const char* byteString){
 
 }
 
-Register::Register(const Register& _register)
-    : id(_register.id),
-    code(_register.code),
-    description(_register.description){}
+Register::Register(const Register& registers)
+    : id(registers.id),
+    code(registers.code),
+    description(registers.description){}
 
 uint32_t Register::getSize(){
     //Plust two because of the '\0' in the strings

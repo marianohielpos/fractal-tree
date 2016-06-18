@@ -1,8 +1,8 @@
 #include <string>
 #include <stdint.h>
 
-#ifndef _REGISTER_H_
-#define _REGISTER_H_
+#ifndef registers_H_
+#define registers_H_
 
 class Register
 {
@@ -28,7 +28,7 @@ public:
 
     Register(const char* byteStream);
 
-    Register(const Register& _register);
+    Register(const Register& registers);
 
     Register();
 
@@ -44,4 +44,4 @@ private:
 
 };
 
-#endif // _REGISTER_H_
+#endif // registers_H_

@@ -1,3 +1,5 @@
+#include "../Common/InnerNode.hpp"
+#include "../Common/LeafNode.hpp"
 #include "../Common/Node.hpp"
 #include "../DataAccess/File.hpp"
 #include <iostream>
@@ -31,7 +33,7 @@ TEST(fileTest, buildAndRecover){
     char* descriptionSeven = (char*)"descriptionSeven";
     char* descriptionEight = (char*)"descriptionEight";
 
-    std::cout << "Creating _registers \n";
+    std::cout << "Creating registerss \n";
     std::unique_ptr<Register> pRegisterOne(new Register(1, codeOne, descriptionOne));
     std::unique_ptr<Register> pRegisterTwo(new Register(2, codeTwo, descriptionTwo));
     std::unique_ptr<Register> pRegisterThree(new Register(3, codeThree, descriptionThree));
@@ -44,89 +46,48 @@ TEST(fileTest, buildAndRecover){
 
 
     std::cout << "Creating nodes \n";
-    std::unique_ptr<Node> pNodeOne(new Node());
-    std::unique_ptr<Node> pNodeTwo(new Node());
-    std::unique_ptr<Node> pNodeThree(new Node());
+    std::unique_ptr<InnerNode> pNodeOne(new InnerNode());
+    std::unique_ptr<InnerNode> pNodeTwo(new InnerNode());
+    std::unique_ptr<InnerNode> pNodeThree(new InnerNode());
 
 
-    std::cout << "Saving _registers in nodes \n";
+    std::cout << "Saving registerss in nodes \n";
 
-    pNodeOne->setRegister(*(pRegisterOne.get()));
+    pNodeOne->insertReference(1,1);
+    pNodeOne->insertReference(2,2);
+    pNodeTwo->insertReference(3,3);
+    pNodeThree->insertReference(4,4);
+
+    ASSERT_EQ(1, pNodeOne->getReference(1));
+    ASSERT_EQ(2, pNodeOne->getReference(2));
+    ASSERT_EQ(3, pNodeTwo->getReference(3));
+    ASSERT_EQ(4, pNodeThree->getReference(4));
+
 
     std::cout << "Creating file \n";
 
     File* file = new File(PATH, 4096);
 
-
     std::cout << "Nodes are saved and recovered\n";
 
 
-    uint32_t position = file->saveNode(pNodeOne.get());
+    uint32_t positionOne = file->saveNode(pNodeOne.get());
+    uint32_t positionTwo = file->saveNode(pNodeTwo.get());
+    uint32_t positionThree = file->saveNode(pNodeThree.get());
 
-    std::unique_ptr<Node> pNodeOneRecovered(file->getNode(position));
+    std::unique_ptr<InnerNode> pNodeOneRecovered((InnerNode*)file->getNode(positionOne));
+    std::unique_ptr<InnerNode> pNodeTwoRecovered((InnerNode*)file->getNode(positionTwo));
+    std::unique_ptr<InnerNode> pNodeThreeRecovered((InnerNode*)file->getNode(positionThree));
 
-    std::cout << pNodeOneRecovered->getRegister(0).getCode() << std::endl;
-    std::cout << pNodeOneRecovered->getRegister(0).getDescription() << std::endl;
-    std::cout << pNodeOneRecovered->getRegister(0).getId() << std::endl;
-
-    ASSERT_STREQ(codeOne, (pNodeOneRecovered->getRegister(0).getCode()));
-    ASSERT_STREQ(descriptionOne, (pNodeOneRecovered->getRegister(0).getDescription()));
-    ASSERT_EQ(1, pNodeOneRecovered->getRegister(0).getId());
+    ASSERT_EQ(1, pNodeOneRecovered->getReference(1));
+    ASSERT_EQ(2, pNodeOneRecovered->getReference(2));
+    ASSERT_EQ(3, pNodeTwoRecovered->getReference(3));
+    ASSERT_EQ(4, pNodeThreeRecovered->getReference(4));
 
 
     delete file;
     return;
 
-    file->saveNode(pNodeTwo.get());
-    file->saveNode(pNodeThree.get());
-
-    Node* nodeOneRecovered = file->getNode(1);
-
-    Node* nodeTwoRecovered = file->getNode(2);
-
-    Node* nodeThreeRecovered = file->getNode(3);
-
-    Node* nodeFourRecovered = file->getNode(4);
-
-
-    std::cout << "Nodes are modifyed";
-
-    Node* nodeOne = file->getNode(1);
-    file->saveNode(nodeOne);
-
-    nodeOneRecovered = file->getNode(1);
-
-
-    std::cout << "Nodes are deleted";
-
-    file->deleteNode(1);
-    nodeOneRecovered = file->getNode(1);
-
-    if( nodeOneRecovered != NULL ){
-        std::cout << "Fail";
-        return;
-    }
-
-    file->deleteNode(1);
-    file->deleteNode(2);
-    file->deleteNode(3);
-
-    nodeTwoRecovered = file->getNode(2);
-    nodeThreeRecovered = file->getNode(3);
-    nodeFourRecovered = file->getNode(4);
-
-    if( nodeTwoRecovered != NULL && nodeThreeRecovered!= NULL && nodeFourRecovered != NULL){
-        std::cout << "ok";
-    }
-    else{
-        std::cout << "Fail";
-        return;
-    }
-
-    delete nodeOneRecovered;
-    delete nodeTwoRecovered;
-    delete nodeThreeRecovered;
-    delete nodeFourRecovered;
 }
 
 

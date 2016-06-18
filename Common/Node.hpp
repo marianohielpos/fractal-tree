@@ -1,34 +1,31 @@
 #include <string>
 #include <stdint.h>
+#include <vector>
 
 #ifndef _NODE_H_
 #define _NODE_H_
 
 #include "Register.hpp"
-
+#define FRACTAL_COHEFICIENT 8
 
 class Node
 {
 public:
 
-    void setRegister(Register& _register);
+    virtual bool getStream(char* buffer, uint32_t size) = 0;
 
-    Register getRegister(uint32_t* id);
+    virtual uint32_t getSize() = 0;
 
-    bool getStream(char* buffer, uint32_t size);
+    virtual uint32_t getType() = 0;
 
-    uint32_t getSize();
+    Node(){};
 
-    Node();
-
-    Node(const char* byteStream);
-
-    ~Node(void);
+    ~Node(){};
 
 protected:
 
 private:
-    Register _register;
+
 };
 
 #endif // _NODE_H_

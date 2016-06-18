@@ -1,2 +1,5 @@
 *.o
-
+.*
+test.bin
+tmp
+persistanceTest

@@ -4,7 +4,7 @@
 #include <memory>
 #include "gtest/gtest.h"
 
-TEST(_registerTest, buildAndRecover) {
+TEST(registersTest, buildAndRecover) {
     char* codeOne = (char*)"111";
     char* codeTwo = (char*)"222";
     char* codeThree = (char*)"333";
