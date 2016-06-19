@@ -16,9 +16,14 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <iostream>
-#include <fstream>
-#include "../Logic/FractalTree.hpp"
+ #include "../DataAccess/File.hpp"
+ #include "../Common/InnerNode.hpp"
+ #include "../Common/LeafNode.hpp"
+ #include "../Common/Node.hpp"
+ #include <iostream>
+ #include <fstream>
+ #include <string.h>
+ #include <sys/stat.h>
 
 // Metodo refrescar
 void FractalTree::refrescar(){
@@ -465,5 +470,3 @@ void FractalTree::postOrdenIterativoAux(NodoBmas *raiz){
 		}
 	}
 }
-
-
