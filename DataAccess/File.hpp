@@ -16,7 +16,7 @@ public:
 
     uint32_t getFileSize();
 
-    Node* getNode(uint32_t offset);
+    Node* getNode(uint32_t number);
 
     uint32_t saveNode(Node* node);
 

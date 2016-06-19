@@ -14,17 +14,14 @@ uint32_t LeafNode::getType(){
     return 1;
 }
 
-Register LeafNode::getRegister(uint32_t id){
-    return this->registers[id];
+Register* LeafNode::getRegister(uint32_t id){
+    return &this->registers.lower_bound(id)->second;
 }
 
 bool LeafNode::getStream(char* buffer, uint32_t size){
     std::cout << "Serializing node" << std::endl;
 
-    uint32_t offset = 0;
     char oneChar = 0x01;
-
-    std::map<uint32_t,Register>::iterator iterator = this->registers.begin();
 
     if( !buffer || this->getSize() > size){
         std::cout << "Warning buffer is not capable" << std::endl;
@@ -34,22 +31,7 @@ bool LeafNode::getStream(char* buffer, uint32_t size){
     //Inner node starts with a one
     memcpy(buffer, &oneChar, sizeof(char));
 
-    offset += 1;
-
-    uint32_t numberOfRegisters = this->registers.size();
-
-    //Number of registers
-    memcpy(buffer + offset, &numberOfRegisters, sizeof(numberOfRegisters));
-
-    offset += sizeof(numberOfRegisters);
-
-    for (; iterator != this->registers.end(); ++iterator){
-
-        iterator->second.getStream(buffer + offset, iterator->second.getSize() );
-
-        offset += iterator->second.getSize();
-
-    }
+    this->serializeRegisters(buffer + 1);
 
     return true;
 
@@ -77,24 +59,9 @@ bool LeafNode::insertRegister(Register& _register){
 LeafNode::LeafNode(const char* byteStream)
     : Node()
     {
-    //Avoid the first byte
-    uint32_t offset = 1;
-    uint32_t numberOfRegisters = 0;
 
-    memcpy(&numberOfRegisters, byteStream + offset, sizeof(uint32_t));
-
-    offset += sizeof(uint32_t);
-
-    for(uint32_t j = 0; j < numberOfRegisters; j++ ){
-        //Workaround for now. Skips the id and code of a node to search por the ending
-
-        Register _register = Register(&byteStream[offset]);
-
-        offset += _register.getSize();
-
-        this->registers[_register.getId()] = _register;
-    }
-
+	//Avoid the first byte
+	this->deSerializeRegisters(byteStream + 1);
 }
 
 LeafNode::~LeafNode(){}

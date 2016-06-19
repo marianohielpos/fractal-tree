@@ -1,12 +1,13 @@
 #include <string>
 #include <stdint.h>
 #include <vector>
+#include <map>
+
 
 #ifndef _NODE_H_
 #define _NODE_H_
 
 #include "Register.hpp"
-#define FRACTAL_COHEFICIENT 8
 
 class Node
 {
@@ -20,12 +21,16 @@ public:
 
     Node(){};
 
-    ~Node(){};
+    virtual ~Node(){};
 
 protected:
 
-private:
+    void serializeRegisters(char* buffer);
+    void deSerializeRegisters(const char* byteStream);
 
+    std::map <uint32_t,Register> registers;
+
+private:
 };
 
 #endif // _NODE_H_

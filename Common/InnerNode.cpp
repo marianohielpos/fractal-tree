@@ -1,4 +1,5 @@
 #include "./InnerNode.hpp"
+#include "./Register.hpp"
 
 #include <string>
 #include <stdint.h>
@@ -13,8 +14,8 @@ void InnerNode::insertReference(uint32_t nodeId, uint32_t offset){
     this->references[nodeId] = offset;
 }
 
-uint32_t InnerNode::getReference(uint32_t nodeId){
-    return this->references[nodeId];
+uint32_t InnerNode::getDirection(uint32_t nodeId){
+    return this->references.lower_bound(nodeId)->second;
 }
 
 uint32_t InnerNode::getType(){
@@ -39,7 +40,7 @@ bool InnerNode::getStream(char* buffer, uint32_t size){
         return false;
     }
 
-    //Inner node starts with a cero
+    //Inner node starts with a zero
     memcpy(buffer, &nullChar, sizeof(char));
 
     offset += 1;
@@ -68,19 +69,14 @@ bool InnerNode::getStream(char* buffer, uint32_t size){
     //Plus null character
     offset += 1;
 
-    memcpy(buffer + offset, this->getBuffer(), strlen(this->getBuffer()));
+    this->serializeRegisters(buffer + offset);
 
     return true;
 
 }
 
-const char* InnerNode::getBuffer(){
-    return this->buffer.c_str();
-}
-
-void InnerNode::insertInBuffer(const char* _register){
-    this->buffer.append(_register);
-    this->buffer.append('\0');
+void InnerNode::insertInBuffer(Register& _register){
+    this->registers[_register.getId()] = _register;
 }
 
 uint32_t InnerNode::getSize(){
@@ -92,8 +88,12 @@ uint32_t InnerNode::getSize(){
     size += 4;
     //References plus null character
     size += this->references.size()*8 + 1;
-    //Buffers plus null character
-    size += strlen(this->getBuffer()) + 1;
+    //Buffers
+    std::map<uint32_t,Register>::iterator iterator = this->registers.begin();
+
+    for (; iterator != this->registers.end(); ++iterator){
+        size += iterator->second.getSize();
+    }
 
     return size;
 
@@ -120,8 +120,6 @@ InnerNode::InnerNode(const char* byteStream)
 
     offset += sizeof(uint32_t);
 
-    uint32_t i = offset;
-
     uint32_t key;
     uint32_t value;
 
@@ -133,11 +131,5 @@ InnerNode::InnerNode(const char* byteStream)
         this->references[key] = value;
     }
 
-    i += 1;
-    offset = i;
-
-    for(; (char)byteStream[i] != '\0' ; ++i);
-
-    this->buffer = std::string(&byteStream[offset], i);
-
+    this->deSerializeRegisters(byteStream + offset);
 }

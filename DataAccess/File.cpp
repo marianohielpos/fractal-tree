@@ -157,6 +157,10 @@ uint32_t File::saveNode(Node* node){
 
 bool File::saveNode(Node* node, uint32_t offset){
 
+    if( node->getSize() > this->blockSize ){
+        return false;
+    }
+    
     uint32_t blockPosition = offset * this->blockSize;
 
     this->openFile.seekg(blockPosition);

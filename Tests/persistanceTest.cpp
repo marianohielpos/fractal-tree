@@ -26,10 +26,10 @@ TEST(fileTest, InnerNode){
     pNodeTwo->insertReference(3,3);
     pNodeThree->insertReference(4,4);
 
-    ASSERT_EQ(1, pNodeOne->getReference(1));
-    ASSERT_EQ(2, pNodeOne->getReference(2));
-    ASSERT_EQ(3, pNodeTwo->getReference(3));
-    ASSERT_EQ(4, pNodeThree->getReference(4));
+    ASSERT_EQ(1, pNodeOne->getDirection(1));
+    ASSERT_EQ(2, pNodeOne->getDirection(2));
+    ASSERT_EQ(3, pNodeTwo->getDirection(3));
+    ASSERT_EQ(4, pNodeThree->getDirection(4));
 
     std::cout << "Creating file \n";
 
@@ -46,10 +46,10 @@ TEST(fileTest, InnerNode){
     std::unique_ptr<InnerNode> pNodeTwoRecovered((InnerNode*)file->getNode(positionTwo));
     std::unique_ptr<InnerNode> pNodeThreeRecovered((InnerNode*)file->getNode(positionThree));
 
-    ASSERT_EQ(1, pNodeOneRecovered->getReference(1));
-    ASSERT_EQ(2, pNodeOneRecovered->getReference(2));
-    ASSERT_EQ(3, pNodeTwoRecovered->getReference(3));
-    ASSERT_EQ(4, pNodeThreeRecovered->getReference(4));
+    ASSERT_EQ(1, pNodeOneRecovered->getDirection(1));
+    ASSERT_EQ(2, pNodeOneRecovered->getDirection(2));
+    ASSERT_EQ(3, pNodeTwoRecovered->getDirection(3));
+    ASSERT_EQ(4, pNodeThreeRecovered->getDirection(4));
 
 
     file->deleteNode(positionOne);
@@ -93,10 +93,10 @@ TEST(fileTest, buildAndRecover){
     pNodeTwo->insertRegister(registerThree);
     pNodeThree->insertRegister(registerFour);
 
-    ASSERT_EQ(1, pNodeOne->getRegister(1).getId());
-    ASSERT_EQ(2, pNodeOne->getRegister(2).getId());
-    ASSERT_EQ(3, pNodeTwo->getRegister(3).getId());
-    ASSERT_EQ(4, pNodeThree->getRegister(4).getId());
+    ASSERT_EQ(1, pNodeOne->getRegister(1)->getId());
+    ASSERT_EQ(2, pNodeOne->getRegister(2)->getId());
+    ASSERT_EQ(3, pNodeTwo->getRegister(3)->getId());
+    ASSERT_EQ(4, pNodeThree->getRegister(4)->getId());
 
     std::cout << "Creating file \n";
 
@@ -113,10 +113,10 @@ TEST(fileTest, buildAndRecover){
     std::unique_ptr<LeafNode> pNodeTwoRecovered((LeafNode*)file->getNode(positionTwo));
     std::unique_ptr<LeafNode> pNodeThreeRecovered((LeafNode*)file->getNode(positionThree));
 
-    ASSERT_EQ(1, pNodeOneRecovered->getRegister(1).getId());
-    ASSERT_EQ(2, pNodeOneRecovered->getRegister(2).getId());
-    ASSERT_EQ(3, pNodeTwoRecovered->getRegister(3).getId());
-    ASSERT_EQ(4, pNodeThreeRecovered->getRegister(4).getId());
+    ASSERT_EQ(1, pNodeOneRecovered->getRegister(1)->getId());
+    ASSERT_EQ(2, pNodeOneRecovered->getRegister(2)->getId());
+    ASSERT_EQ(3, pNodeTwoRecovered->getRegister(3)->getId());
+    ASSERT_EQ(4, pNodeThreeRecovered->getRegister(4)->getId());
 
     file->deleteNode(positionOne);
     file->deleteNode(positionTwo);

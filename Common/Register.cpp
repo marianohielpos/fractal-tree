@@ -4,8 +4,6 @@
 #include <sstream>
 #include <cstring>
 
-#define FRACTAL_COHEFICIENT
-
 uint32_t Register::getId(){
     return this->id;
 }

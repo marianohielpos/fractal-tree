@@ -16,7 +16,7 @@ public:
 
     bool insertRegister(Register& _register);
 
-    Register getRegister(uint32_t id);
+    Register* getRegister(uint32_t id);
 
     bool getStream(char* buffer, uint32_t size);
 
@@ -34,7 +34,6 @@ public:
 protected:
 
 private:
-    std::map <uint32_t,Register> registers;
 };
 
 #endif // _LEAF_NODE_H_
