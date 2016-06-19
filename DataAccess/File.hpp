@@ -16,9 +16,7 @@ public:
 
     uint32_t getNodePosition(uint32_t id);
 
-    char* getZoneControlBlock(uint32_t controlSectorNumber);
-
-    char* getBlock(uint32_t blockPosition);
+    void getBlock(uint32_t blockPosition, char* memblock);
 
     bool setToCeroSector(uint32_t sector);
 
@@ -29,8 +27,6 @@ public:
     uint32_t getFreeSpaceDirection();
 
     bool registersId(uint32_t blockPosition, uint32_t id);
-
-    uint32_t getControlZoneNumber(uint32_t blockPosition);
 
     Node* getNode(uint32_t offset);
 

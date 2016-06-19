@@ -67,25 +67,14 @@ bool File::setToCeroSector(uint32_t sectorOffset){
 }
 
 
-uint32_t File::getControlZoneNumber(uint32_t blockPosition){
-    return (blockPosition/this->blockSize -1);
-}
-
-char* File::getZoneControlBlock(uint32_t controlSectorNumber){
-    return this->getBlock(this->getMappingZonePosition(controlSectorNumber));
-}
-
-char* File::getBlock(uint32_t blockPosition){
-
-    char* memblock;
+void File::getBlock(uint32_t blockPosition, char* memblock){
 
     uint32_t absoluteBlockPosition = blockPosition * this->blockSize;
 
-    memblock = new char [this->blockSize];
     this->openFile.seekg(absoluteBlockPosition);
     this->openFile.read(memblock, this->blockSize);
 
-    return memblock;
+    return;
 }
 
 uint32_t File::getMappingZonePosition(uint32_t zone){
@@ -105,7 +94,9 @@ uint32_t File::getFileSize(){
 
 uint32_t File::getFreeSpaceDirection(){
 
-    const char* block = this->getBlock(0);
+    char block[this->blockSize];
+
+    this->getBlock(0, block);
 
     char character;
 
@@ -127,13 +118,11 @@ uint32_t File::getFreeSpaceDirection(){
 
 Node* File::getNode(uint32_t offset){
 
-    char* memblock;
+    char memblock[this->blockSize];
 
-    memblock = this->getBlock(offset);
+    this->getBlock(offset, memblock);
 
     Node* node = this->factory.buildNode(memblock);
-
-    delete memblock;
 
     return node;
 }
