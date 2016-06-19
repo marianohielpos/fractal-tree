@@ -51,12 +51,12 @@ bool File::checkFileExistance(const char* pathToFile){
 
 
 bool File::initializeControlSector(uint32_t controlSectorNumber){
-    return this->setToCeroSector(this->getMappingZonePosition(controlSectorNumber));
+    return this->setToCeroSector(0);
 }
 
-bool File::setToCeroSector(uint32_t sectorOffset){
+bool File::setToCeroSector(uint32_t blockPosition){
 
-    this->openFile.seekg(sectorOffset);
+    this->openFile.seekg(blockPosition * this->blockSize);
 
     std::cout << "Setting to cero\n";
     for(uint32_t counter = 0; counter < this->blockSize; counter++){
@@ -75,10 +75,6 @@ void File::getBlock(uint32_t blockPosition, char* memblock){
     this->openFile.read(memblock, this->blockSize);
 
     return;
-}
-
-uint32_t File::getMappingZonePosition(uint32_t zone){
-    return (zone * (this->blockSize + zone));
 }
 
 uint32_t File::getFileSize(){
@@ -117,6 +113,7 @@ uint32_t File::getFreeSpaceDirection(){
 }
 
 Node* File::getNode(uint32_t offset){
+    this->openFile.clear();
 
     char memblock[this->blockSize];
 
@@ -128,7 +125,7 @@ Node* File::getNode(uint32_t offset){
 }
 
 uint32_t File::saveNode(Node* node){
-
+    this->openFile.clear();
     uint32_t positionInControlZone = this->getFreeSpaceDirection();
 
     std::cout << "position in control zone: " << positionInControlZone << std::endl;
@@ -175,16 +172,15 @@ bool File::saveNode(Node* node, uint32_t offset){
 
 bool File::setControlPosition(uint32_t positionInControlZone, bool setToCero){
 
+    this->openFile.clear();
     this->openFile.seekg(positionInControlZone / 8);
 
     char controlChar = this->openFile.get();
 
-    this->openFile.seekg(positionInControlZone / 8);
-
     //Set to cero a position
-    char register ceroMask = 0xFE;
+    char ceroMask = 0xFE;
     //Set to one a position
-    char register oneMask = 0x01;
+    char oneMask = 0x01;
 
     for(uint32_t i = 0; i < positionInControlZone % 8; i++){
         ceroMask = (ceroMask << 1) | 0x01;
@@ -198,15 +194,16 @@ bool File::setControlPosition(uint32_t positionInControlZone, bool setToCero){
         controlChar = controlChar | oneMask;
     }
 
-    std::cout << "Control char " << (uint32_t)controlChar << std::endl;
-    std::cout << "Position " << (uint32_t)positionInControlZone << std::endl;
+    this->openFile.seekg(positionInControlZone / 8);
 
     this->openFile.put(controlChar);
 
     return true;
-
 }
 
-bool File::deleteNode(uint32_t offset){
-    return this->setControlPosition(offset, true) && this->setToCeroSector(offset);
+bool File::deleteNode(uint32_t blockNumber){
+    std::cout << "Deleting node " << blockNumber << std::endl;
+    this->setControlPosition(blockNumber - 1, true);
+    this->setToCeroSector(blockNumber);
+    return true;
 }

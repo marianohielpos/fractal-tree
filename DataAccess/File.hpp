@@ -20,8 +20,6 @@ public:
 
     bool setToCeroSector(uint32_t sector);
 
-    uint32_t getMappingZonePosition(uint32_t controlSectorNumber);
-
     uint32_t getFileSize();
 
     uint32_t getFreeSpaceDirection();

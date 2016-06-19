@@ -52,6 +52,10 @@ TEST(fileTest, InnerNode){
     ASSERT_EQ(4, pNodeThreeRecovered->getReference(4));
 
 
+    file->deleteNode(positionOne);
+    file->deleteNode(positionTwo);
+    file->deleteNode(positionThree);
+
     delete file;
     return;
 
@@ -114,6 +118,9 @@ TEST(fileTest, buildAndRecover){
     ASSERT_EQ(3, pNodeTwoRecovered->getRegister(3).getId());
     ASSERT_EQ(4, pNodeThreeRecovered->getRegister(4).getId());
 
+    file->deleteNode(positionOne);
+    file->deleteNode(positionTwo);
+    file->deleteNode(positionThree);
 
     delete file;
     return;

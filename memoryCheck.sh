@@ -1,1 +1,1 @@
-valgrind --leak-check=yes ./nodeTest
+valgrind --leak-check=yes ./persistanceTest
