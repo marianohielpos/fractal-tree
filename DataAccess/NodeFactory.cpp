@@ -19,7 +19,8 @@ Node* NodeFactory::buildNode(const char* charStream){
             return (Node*) new InnerNode(charStream);
             break;
         case 1:
-            //return (Node*) new LeafNode(charStream);
+        std::cout << "Making an LeafNode" << std::endl;
+            return (Node*) new LeafNode(charStream);
             break;
     }
 

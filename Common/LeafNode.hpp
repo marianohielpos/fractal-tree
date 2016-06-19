@@ -1,23 +1,22 @@
 #include "./Node.hpp"
+#include "Register.hpp"
 
 #include <string>
 #include <stdint.h>
 #include <vector>
+#include <map>
+#include <iostream>
+
 
 #ifndef _LEAF_NODE_H_
 #define _LEAF_NODE_H_
-
-#include "Register.hpp"
-
 class LeafNode : public Node
 {
 public:
 
-    void insertRegister(uint32_t place, Register& registers);
+    bool insertRegister(Register& _register);
 
-    bool insertRegister(Register& registers);
-
-    Register getRegister(uint32_t place);
+    Register getRegister(uint32_t id);
 
     bool getStream(char* buffer, uint32_t size);
 
@@ -35,8 +34,7 @@ public:
 protected:
 
 private:
-    std::vector<Register> registers;
-    std::vector<uint32_t> offsets;
+    std::map <uint32_t,Register> registers;
 };
 
 #endif // _LEAF_NODE_H_

@@ -10,40 +10,8 @@
 
 #define PATH "./test.bin"
 
-TEST(fileTest, buildAndRecover){
+TEST(fileTest, InnerNode){
     std::cout << "Starting \n";
-    char* codeOne = (char*)"111";
-    char* codeTwo = (char*)"222";
-    char* codeThree = (char*)"333";
-    char* codeFour = (char*)"444";
-
-    char* codeFive = (char*)"111";
-    char* codeSix = (char*)"222";
-    char* codeSeven = (char*)"333";
-    char* codeEight = (char*)"444";
-
-
-    char* descriptionOne = (char*)"descriptionOne";
-    char* descriptionTwo = (char*)"descriptionTwo";
-    char* descriptionThree = (char*)"descriptionThree";
-    char* descriptionFour = (char*)"descriptionFour";
-
-    char* descriptionFive = (char*)"descriptionFive";
-    char* descriptionSix = (char*)"descriptionSix";
-    char* descriptionSeven = (char*)"descriptionSeven";
-    char* descriptionEight = (char*)"descriptionEight";
-
-    std::cout << "Creating registerss \n";
-    std::unique_ptr<Register> pRegisterOne(new Register(1, codeOne, descriptionOne));
-    std::unique_ptr<Register> pRegisterTwo(new Register(2, codeTwo, descriptionTwo));
-    std::unique_ptr<Register> pRegisterThree(new Register(3, codeThree, descriptionThree));
-    std::unique_ptr<Register> pRegisterFour(new Register(4, codeFour, descriptionFour));
-
-    std::unique_ptr<Register> pRegisterFive(new Register(1, codeFive, descriptionFive));
-    std::unique_ptr<Register> pRegisterSix(new Register(2, codeSix, descriptionSix));
-    std::unique_ptr<Register> pRegisterSeven(new Register(3, codeSeven, descriptionSeven));
-    std::unique_ptr<Register> pRegisterEight(new Register(4, codeEight, descriptionEight));
-
 
     std::cout << "Creating nodes \n";
     std::unique_ptr<InnerNode> pNodeOne(new InnerNode());
@@ -62,7 +30,6 @@ TEST(fileTest, buildAndRecover){
     ASSERT_EQ(2, pNodeOne->getReference(2));
     ASSERT_EQ(3, pNodeTwo->getReference(3));
     ASSERT_EQ(4, pNodeThree->getReference(4));
-
 
     std::cout << "Creating file \n";
 
@@ -83,6 +50,69 @@ TEST(fileTest, buildAndRecover){
     ASSERT_EQ(2, pNodeOneRecovered->getReference(2));
     ASSERT_EQ(3, pNodeTwoRecovered->getReference(3));
     ASSERT_EQ(4, pNodeThreeRecovered->getReference(4));
+
+
+    delete file;
+    return;
+
+}
+
+
+TEST(fileTest, buildAndRecover){
+    std::cout << "Starting \n";
+    char* codeOne = (char*)"111";
+    char* codeTwo = (char*)"222";
+    char* codeThree = (char*)"333";
+    char* codeFour = (char*)"444";
+
+    char* descriptionOne = (char*)"descriptionOne";
+    char* descriptionTwo = (char*)"descriptionTwo";
+    char* descriptionThree = (char*)"descriptionThree";
+    char* descriptionFour = (char*)"descriptionFour";
+
+    std::cout << "Creating registerss \n";
+    Register registerOne =  Register(1, codeOne, descriptionOne);
+    Register registerTwo =  Register(2, codeTwo, descriptionTwo);
+    Register registerThree =  Register(3, codeThree, descriptionThree);
+    Register registerFour =  Register(4, codeFour, descriptionFour);
+
+    std::cout << "Creating nodes \n";
+    std::unique_ptr<LeafNode> pNodeOne(new LeafNode());
+    std::unique_ptr<LeafNode> pNodeTwo(new LeafNode());
+    std::unique_ptr<LeafNode> pNodeThree(new LeafNode());
+
+
+    std::cout << "Saving registerss in nodes \n";
+
+    pNodeOne->insertRegister(registerOne);
+    pNodeOne->insertRegister(registerTwo);
+    pNodeTwo->insertRegister(registerThree);
+    pNodeThree->insertRegister(registerFour);
+
+    ASSERT_EQ(1, pNodeOne->getRegister(1).getId());
+    ASSERT_EQ(2, pNodeOne->getRegister(2).getId());
+    ASSERT_EQ(3, pNodeTwo->getRegister(3).getId());
+    ASSERT_EQ(4, pNodeThree->getRegister(4).getId());
+
+    std::cout << "Creating file \n";
+
+    File* file = new File(PATH, 4096);
+
+    std::cout << "Nodes are saved and recovered\n";
+
+
+    uint32_t positionOne = file->saveNode(pNodeOne.get());
+    uint32_t positionTwo = file->saveNode(pNodeTwo.get());
+    uint32_t positionThree = file->saveNode(pNodeThree.get());
+
+    std::unique_ptr<LeafNode> pNodeOneRecovered((LeafNode*)file->getNode(positionOne));
+    std::unique_ptr<LeafNode> pNodeTwoRecovered((LeafNode*)file->getNode(positionTwo));
+    std::unique_ptr<LeafNode> pNodeThreeRecovered((LeafNode*)file->getNode(positionThree));
+
+    ASSERT_EQ(1, pNodeOneRecovered->getRegister(1).getId());
+    ASSERT_EQ(2, pNodeOneRecovered->getRegister(2).getId());
+    ASSERT_EQ(3, pNodeTwoRecovered->getRegister(3).getId());
+    ASSERT_EQ(4, pNodeThreeRecovered->getRegister(4).getId());
 
 
     delete file;
