@@ -21,20 +21,20 @@ TEST(registersTest, buildAndRecover) {
     std::unique_ptr<Register> pRegisterThree(new Register(3, codeThree, descriptionThree));
     std::unique_ptr<Register> pRegisterFour(new Register(4, codeFour, descriptionFour));
 
-    ASSERT_STREQ(codeOne, (*pRegisterOne->getCode()).c_str());
-    ASSERT_STREQ(codeTwo, (*pRegisterTwo->getCode()).c_str());
-    ASSERT_STREQ(codeThree, (*pRegisterThree->getCode()).c_str());
-    ASSERT_STREQ(codeFour, (*pRegisterFour->getCode()).c_str());
+    ASSERT_STREQ(codeOne, (pRegisterOne->getCode()));
+    ASSERT_STREQ(codeTwo, (pRegisterTwo->getCode()));
+    ASSERT_STREQ(codeThree, (pRegisterThree->getCode()));
+    ASSERT_STREQ(codeFour, (pRegisterFour->getCode()));
 
-    ASSERT_EQ(1, *pRegisterOne->getId());
-    ASSERT_EQ(2, *pRegisterTwo->getId());
-    ASSERT_EQ(3, *pRegisterThree->getId());
-    ASSERT_EQ(4, *pRegisterFour->getId());
+    ASSERT_EQ(1, pRegisterOne->getId());
+    ASSERT_EQ(2, pRegisterTwo->getId());
+    ASSERT_EQ(3, pRegisterThree->getId());
+    ASSERT_EQ(4, pRegisterFour->getId());
 
-    ASSERT_STREQ(descriptionOne, (*pRegisterOne->getDescription()).c_str());
-    ASSERT_STREQ(descriptionTwo, (*pRegisterTwo->getDescription()).c_str());
-    ASSERT_STREQ(descriptionThree, (*pRegisterThree->getDescription()).c_str());
-    ASSERT_STREQ(descriptionFour, (*pRegisterFour->getDescription()).c_str());
+    ASSERT_STREQ(descriptionOne, (pRegisterOne->getDescription()));
+    ASSERT_STREQ(descriptionTwo, (pRegisterTwo->getDescription()));
+    ASSERT_STREQ(descriptionThree, (pRegisterThree->getDescription()));
+    ASSERT_STREQ(descriptionFour, (pRegisterFour->getDescription()));
 
 }
 

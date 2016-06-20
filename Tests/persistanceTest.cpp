@@ -88,10 +88,10 @@ TEST(fileTest, buildAndRecover){
 
     std::cout << "Saving registerss in nodes \n";
 
-    pNodeOne->insertRegister(registerOne);
-    pNodeOne->insertRegister(registerTwo);
-    pNodeTwo->insertRegister(registerThree);
-    pNodeThree->insertRegister(registerFour);
+    pNodeOne->insertRegister(&registerOne);
+    pNodeOne->insertRegister(&registerTwo);
+    pNodeTwo->insertRegister(&registerThree);
+    pNodeThree->insertRegister(&registerFour);
 
     ASSERT_EQ(1, pNodeOne->getRegister(1)->getId());
     ASSERT_EQ(2, pNodeOne->getRegister(2)->getId());
