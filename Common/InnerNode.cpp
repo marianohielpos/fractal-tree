@@ -35,11 +35,6 @@ bool InnerNode::getStream(char* buffer, uint32_t size){
 
     std::map<uint32_t,uint32_t>::iterator iterator = this->references.begin();
 
-    if( !buffer || this->getSize() > size){
-        std::cout << "Warning buffer is not capable" << std::endl;
-        return false;
-    }
-
     //Inner node starts with a zero
     memcpy(buffer, &nullChar, sizeof(char));
 
@@ -57,7 +52,6 @@ bool InnerNode::getStream(char* buffer, uint32_t size){
         memcpy(buffer + offset, &iterator->first, sizeof(iterator->first));
 
         offset += sizeof(iterator->first);
-
 
         memcpy(buffer + offset, &iterator->second, sizeof(iterator->second));
 
@@ -106,8 +100,6 @@ InnerNode::InnerNode()
 }
 
 InnerNode::~InnerNode(){};
-
-
 
 InnerNode::InnerNode(const char* byteStream)
     : Node()

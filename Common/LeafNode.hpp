@@ -14,7 +14,7 @@ class LeafNode : public Node
 {
 public:
 
-    bool insertRegister(Register& _register);
+    bool insertRegister(Register* _register);
 
     Register* getRegister(uint32_t id);
 

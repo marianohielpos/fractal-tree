@@ -28,6 +28,8 @@ File::File(const char* pathToFile, uint32_t blockSize){
         if ( (this->openFile.rdstate() & std::ifstream::failbit ) != 0 )
             std::cerr << "Error opening file \n";
         this->initializeControlSector(0);
+        LeafNode node = LeafNode();
+        this->saveNode(&node);
     }
     else{
         std::cout << "Opening existing file" << std::endl;
@@ -157,10 +159,11 @@ uint32_t File::saveNode(Node* node){
 
 bool File::saveNode(Node* node, uint32_t offset){
 
+    this->openFile.clear();
     if( node->getSize() > this->blockSize ){
         return false;
     }
-    
+
     uint32_t blockPosition = offset * this->blockSize;
 
     this->openFile.seekg(blockPosition);

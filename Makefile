@@ -1,4 +1,4 @@
-EXEC = persistanceTest
+EXEC = treeTest
 CC=g++
 CFLAGS=-Wall -std=c++11
 BINFILES = $(wildcard *.o)
@@ -22,7 +22,11 @@ persistance:
 common:
 	$(CC) $(CFLAGS) -c $(COMMON_BIN)
 
-test: common persistance
+logic:
+	$(CC) $(CFLAGS) -c $(LOGIC_BIN)
+
+
+test: common persistance logic
 	$(CC) $(CFLAGS) $(BINFILES) $(TESTS_PATH)$(EXEC).cpp -o $(EXEC) -lgtest -lgtest_main
 
 .PHONY: clean main

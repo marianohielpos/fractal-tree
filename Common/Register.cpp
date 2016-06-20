@@ -75,8 +75,6 @@ Register::Register(const char* byteString){
 
     for(; (char)byteString[i] != '\0' ; ++i);
 
-    std::cout << i << std::endl;
-
     this->description = std::string(&byteString[offset], i);
 
 }

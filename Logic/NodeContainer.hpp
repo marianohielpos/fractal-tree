@@ -1,15 +1,26 @@
-#include "./NodeContainer.hpp"
+#include "../Common/Node.hpp"
 
+#ifndef _NODECONTAINER_H_
+#define _NODECONTAINER_H_
 
-Node NodeContainer::getNode(){
-    return this->node;
-}
+class NodeContainer
+{
 
-void  NodeContainer::setNode(Node node,uint32_t place){
-    this->node = node;
-    this->place = place;
-}
+public:
 
-uint32_t  NodeContainer::getPlace(){
-    return this->place;
-}
+	Node* getNode();
+
+	void setNode(Node* node,uint32_t place);
+
+	uint32_t getPlace();
+
+protected:
+
+private:
+
+	Node* node;
+    uint32_t place;
+
+};
+
+#endif

@@ -1,26 +1,15 @@
-#include "../Common/Node.hpp"
+#include "./NodeContainer.hpp"
 
-#ifndef _NODECONTAINER_H_
-#define _NODECONTAINER_H_
 
-class FractalTree
-{
+Node* NodeContainer::getNode(){
+    return this->node;
+}
 
-public:
+void  NodeContainer::setNode(Node* node,uint32_t place){
+    this->node = node;
+    this->place = place;
+}
 
-	Node getNode();
-
-	void setNode(Node node,uint32_t place);
-
-	uint32_t getPlace();
-
-protected:
-
-private:
-
-	Node node;
-    uint32_t place;
-
-};
-
-#endif
+uint32_t  NodeContainer::getPlace(){
+    return this->place;
+}

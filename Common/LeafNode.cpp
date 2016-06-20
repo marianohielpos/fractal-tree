@@ -7,7 +7,6 @@
 #include <map>
 #include <cstring>
 
-
 LeafNode::LeafNode(){}
 
 uint32_t LeafNode::getType(){
@@ -50,9 +49,9 @@ uint32_t LeafNode::getSize(){
     return size;
 }
 
-bool LeafNode::insertRegister(Register& _register){
+bool LeafNode::insertRegister(Register* _register){
 
-    this->registers[_register.getId()] = Register(_register);
+    this->registers[_register->getId()] = Register(*_register);
     return true;
 }
 
