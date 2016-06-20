@@ -13,8 +13,8 @@ uint32_t LeafNode::getType(){
     return 1;
 }
 
-Register* LeafNode::getRegister(uint32_t id){
-    return &this->registers.lower_bound(id)->second;
+uint32_t LeafNode::getMin(){
+    return this->registers.lower_bound(0)->first;
 }
 
 bool LeafNode::getStream(char* buffer, uint32_t size){
@@ -47,12 +47,6 @@ uint32_t LeafNode::getSize(){
     }
 
     return size;
-}
-
-bool LeafNode::insertRegister(Register* _register){
-
-    this->registers[_register->getId()] = Register(*_register);
-    return true;
 }
 
 LeafNode::LeafNode(const char* byteStream)

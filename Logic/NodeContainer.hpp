@@ -1,4 +1,4 @@
-#include "../Common/Node.hpp"
+#include "../Common/InnerNode.hpp"
 
 #ifndef _NODECONTAINER_H_
 #define _NODECONTAINER_H_
@@ -8,9 +8,9 @@ class NodeContainer
 
 public:
 
-	Node* getNode();
+	InnerNode* getNode();
 
-	void setNode(Node* node,uint32_t place);
+	NodeContainer(InnerNode* node,uint32_t place);
 
 	uint32_t getPlace();
 
@@ -18,7 +18,7 @@ protected:
 
 private:
 
-	Node* node;
+	InnerNode* node;
     uint32_t place;
 
 };

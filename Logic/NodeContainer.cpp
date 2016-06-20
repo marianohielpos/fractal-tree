@@ -1,11 +1,11 @@
 #include "./NodeContainer.hpp"
 
 
-Node* NodeContainer::getNode(){
+InnerNode* NodeContainer::getNode(){
     return this->node;
 }
 
-void  NodeContainer::setNode(Node* node,uint32_t place){
+NodeContainer::NodeContainer(InnerNode* node,uint32_t place){
     this->node = node;
     this->place = place;
 }

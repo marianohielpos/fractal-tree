@@ -14,13 +14,11 @@ class LeafNode : public Node
 {
 public:
 
-    bool insertRegister(Register* _register);
-
-    Register* getRegister(uint32_t id);
-
     bool getStream(char* buffer, uint32_t size);
 
     uint32_t getSize();
+
+    uint32_t getMin();
 
     LeafNode();
 

@@ -1,6 +1,7 @@
 #include "../DataAccess/File.hpp"
 #include "../Common/Register.hpp"
 #include "../Common/Node.hpp"
+#include "../Common/LeafNode.hpp"
 #include "./NodeContainer.hpp"
 
 #include <stack>
@@ -14,11 +15,11 @@ public:
 
 	Register* getRegister(uint32_t id);
 
-	Register* getRegister(uint32_t id, uint32_t nodePlace);
+	Register* getRegister(uint32_t id, uint32_t nodePlace, uint32_t level);
 
 	bool setRegister(Register* _register);
 
-	bool setRegister(Register* _register, uint32_t nodePlace);
+	bool setRegister(Register* _register, uint32_t nodePlace, uint32_t level);
 
 	bool deleteRegister(uint32_t id);
 
@@ -28,7 +29,8 @@ protected:
 
 private:
 
-	std::stack<NodeContainer> nodes;
+	std::vector<LeafNode> splitNode(LeafNode* node);
+
 	File* file;
 
 };

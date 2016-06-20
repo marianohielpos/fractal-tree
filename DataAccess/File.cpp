@@ -128,6 +128,11 @@ Node* File::getNode(uint32_t offset){
 
 uint32_t File::saveNode(Node* node){
     this->openFile.clear();
+
+    if( node->getSize() > this->blockSize ){
+        return 0;
+    }
+
     uint32_t positionInControlZone = this->getFreeSpaceDirection();
 
     std::cout << "position in control zone: " << positionInControlZone << std::endl;

@@ -3,6 +3,25 @@
 #include <cstring>
 
 
+std::map<uint32_t,Register>* Node::getRegisters(void){
+    return &this->registers;
+}
+
+Register* Node::getRegister(uint32_t id){
+    return &this->registers.lower_bound(id)->second;
+}
+
+void Node::removeRegister(uint32_t id){
+    this->registers.erase(id);
+}
+
+bool Node::insertRegister(Register* _register){
+
+    this->registers[_register->getId()] = Register(*_register);
+    return true;
+}
+
+
 void Node::serializeRegisters(char* buffer){
 
     uint32_t numberOfRegisters = this->registers.size();

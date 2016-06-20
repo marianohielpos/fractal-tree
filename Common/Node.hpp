@@ -13,6 +13,14 @@ class Node
 {
 public:
 
+    std::map<uint32_t,Register>* getRegisters(void);
+
+    Register* getRegister(uint32_t id);
+
+    void removeRegister(uint32_t id);
+
+    bool insertRegister(Register* _register);
+
     virtual bool getStream(char* buffer, uint32_t size) = 0;
 
     virtual uint32_t getSize() = 0;

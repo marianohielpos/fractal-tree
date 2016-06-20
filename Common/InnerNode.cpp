@@ -14,9 +14,19 @@ void InnerNode::insertReference(uint32_t nodeId, uint32_t offset){
     this->references[nodeId] = offset;
 }
 
+
+uint32_t InnerNode::getNumberOfReferences(){
+    return this->references.size();
+}
+
 uint32_t InnerNode::getDirection(uint32_t nodeId){
     return this->references.lower_bound(nodeId)->second;
 }
+
+void InnerNode::modifyDirection(uint32_t nodeId, uint32_t value){
+    this->references.lower_bound(nodeId)->second = value;
+}
+
 
 uint32_t InnerNode::getType(){
     return 0;
@@ -67,10 +77,6 @@ bool InnerNode::getStream(char* buffer, uint32_t size){
 
     return true;
 
-}
-
-void InnerNode::insertInBuffer(Register& _register){
-    this->registers[_register.getId()] = _register;
 }
 
 uint32_t InnerNode::getSize(){

@@ -23,7 +23,9 @@ public:
 
     bool getStream(char* buffer, uint32_t size);
 
-    void insertInBuffer(Register& _register);
+    uint32_t getNumberOfReferences();
+
+    void modifyDirection(uint32_t nodeId, uint32_t value);
 
     uint32_t getSize();
 
