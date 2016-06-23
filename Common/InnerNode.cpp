@@ -20,11 +20,23 @@ uint32_t InnerNode::getNumberOfReferences(){
 }
 
 uint32_t InnerNode::getDirection(uint32_t nodeId){
-    return this->references.lower_bound(nodeId)->second;
+    std::map<uint32_t, uint32_t>::iterator it = this->references.lower_bound(nodeId);
+
+    if( it == this->references.end()){
+        it--;
+    }
+
+    return it->second;
 }
 
 void InnerNode::modifyDirection(uint32_t nodeId, uint32_t value){
-    this->references.lower_bound(nodeId)->second = value;
+    std::map<uint32_t, uint32_t>::iterator it = this->references.lower_bound(nodeId);
+
+    if( it == this->references.end()){
+        it--;
+    }
+
+    it->second = value;
 }
 
 
@@ -73,7 +85,7 @@ bool InnerNode::getStream(char* buffer, uint32_t size){
     //Plus null character
     offset += 1;
 
-    this->serializeRegisters(buffer + offset);
+    //this->serializeRegisters(buffer + offset);
 
     return true;
 
@@ -110,11 +122,14 @@ InnerNode::~InnerNode(){};
 InnerNode::InnerNode(const char* byteStream)
     : Node()
     {
+    std::cout << "Avoid first char" << std::endl;
     //Avoid the first byte
     uint32_t offset = 1;
     uint32_t numberOfReferences = 0;
 
     memcpy(&numberOfReferences, byteStream + offset, sizeof(uint32_t));
+
+    std::cout << "Number of references " << numberOfReferences << std::endl;
 
     offset += sizeof(uint32_t);
 
@@ -125,9 +140,12 @@ InnerNode::InnerNode(const char* byteStream)
         memcpy(&key, byteStream + offset, sizeof(uint32_t));
         memcpy(&value, byteStream + offset + 4, sizeof(uint32_t));
 
+        std::cout << "Key: " << key << std::endl;
+        std::cout << "Value: " << value << std::endl;
+
         offset += 8;
         this->references[key] = value;
     }
 
-    this->deSerializeRegisters(byteStream + offset);
+    //this->deSerializeRegisters(byteStream + offset);
 }

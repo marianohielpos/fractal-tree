@@ -21,9 +21,11 @@ Register* FractalTree::getRegister(uint32_t id){
 }
 
 Register* FractalTree::getRegister(uint32_t id, uint32_t nodePlace, uint32_t level){
+	std::cout << "nodePlace " << nodePlace << std::endl;
 	Node* node = this->file->getNode(nodePlace);
 	switch (node->getType()) {
 		case 0:
+		std::cout << ((InnerNode*)node)->getDirection(id) << std::endl;
 			return this->getRegister(id, ((InnerNode*)node)->getDirection(id), level++);
 		case 1:
 			return ((LeafNode*)node)->getRegister(id);
@@ -64,6 +66,7 @@ bool FractalTree::setRegister(Register* _register, uint32_t nodePlace, uint32_t 
 			case 0:
 				nodes.push(NodeContainer((InnerNode*)node, nodePlace));
 				nodePlace = ((InnerNode*)node)->getDirection(_register->getId());
+				std::cout << "Direction: " << nodePlace << std::endl;
 				break;
 			case 1:
 				std::cout << "Saving register" << std::endl;
@@ -92,11 +95,14 @@ bool FractalTree::setRegister(Register* _register, uint32_t nodePlace, uint32_t 
 		std::cerr << "Warning, couldn't save node" << std::endl;
 	}
 
-	InnerNode newInnerNode = InnerNode();
 
 	if( nodes.empty() ){
 		this->file->deleteNode(nodePlace);
-		nodes.push(NodeContainer(&newInnerNode, nodePlace));
+		InnerNode newInnerNode = InnerNode();
+		newInnerNode.insertReference(v[0].getMin(), placeOne);
+		newInnerNode.insertReference(v[1].getMin(), placeTwo);
+		this->file->saveNode(&newInnerNode);
+		return true;
 	}
 
 	NodeContainer nodeContainer = nodes.top();
@@ -105,6 +111,7 @@ bool FractalTree::setRegister(Register* _register, uint32_t nodePlace, uint32_t 
 	InnerNode* innerNode = nodeContainer.getNode();
 
 	if( innerNode->getNumberOfReferences() == (2 ^ level)){
+		InnerNode newInnerNode = InnerNode();
 		newInnerNode.insertReference(v[0].getMin(), placeOne);
 		newInnerNode.insertReference(v[1].getMin(), placeTwo);
 		innerNode->modifyDirection(_register->getId(), this->file->saveNode(&newInnerNode));
@@ -114,9 +121,10 @@ bool FractalTree::setRegister(Register* _register, uint32_t nodePlace, uint32_t 
 		innerNode->insertReference(v[1].getMin(), placeTwo);
 	}
 
-	this->file->saveNode(&newInnerNode, nodeContainer.getPlace());
+	std::cout << "Saving node in " << nodeContainer.getPlace() << std::endl;
+	this->file->saveNode(innerNode, nodeContainer.getPlace());
 
-	return false;
+	return true;
 }
 
 std::vector<LeafNode> FractalTree::splitNode(LeafNode* node){

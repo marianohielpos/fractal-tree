@@ -1,6 +1,7 @@
 #include <map>
 #include "./Node.hpp"
 #include <cstring>
+#include <iostream>
 
 
 std::map<uint32_t,Register>* Node::getRegisters(void){
@@ -29,6 +30,9 @@ void Node::serializeRegisters(char* buffer){
 
     std::map<uint32_t,Register>::iterator iterator = this->registers.begin();
 
+    std::cout << "serializeRegisters" << std::endl;
+    std::cout << "Number of registers " << numberOfRegisters << std::endl;
+
     memcpy(buffer + offset, &numberOfRegisters, sizeof(numberOfRegisters));
 
     offset += sizeof(numberOfRegisters);
@@ -46,7 +50,11 @@ void Node::deSerializeRegisters(const char* byteStream){
     uint32_t numberOfRegisters = 0;
     uint32_t offset = 0;
 
+    std::cout << "deSerializeRegisters" << std::endl;
+
     memcpy(&numberOfRegisters, byteStream + offset, sizeof(uint32_t));
+
+    std::cout << "Number of refgisters: " << numberOfRegisters << std::endl;
 
     offset += sizeof(uint32_t);
 

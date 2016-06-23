@@ -10,6 +10,32 @@
 
 
 #define PATH "./test.bin"
+TEST(treeTest, amountTest){
+    std::cout << "Starting \n";
+    FractalTree* fractalTree = new FractalTree(PATH);
+
+    char* codeOne = (char*)"111";
+
+    char* descriptionOne = (char*)"descriptionOne";
+
+
+    std::cout << "Creating registerss \n";
+
+
+    for(uint32_t i = 1; i < 1000; i++){
+        std::cout << "Inserting node " << i << std::endl;
+        Register registerOne =  Register(i, codeOne, descriptionOne);
+        fractalTree->setRegister(&registerOne);
+        Register* registerOneRecovered = fractalTree->getRegister(i);
+        ASSERT_EQ(i, registerOneRecovered->getId());
+    }
+
+
+    delete fractalTree;
+    return;
+
+}
+
 
 TEST(treeTest, treeTest){
     std::cout << "Starting \n";
@@ -42,7 +68,7 @@ TEST(treeTest, treeTest){
 	Register* registerTwoRecovered = fractalTree->getRegister(2);
 	Register* registerThreeRecovered = fractalTree->getRegister(3);
 	Register* registerFourRecovered = fractalTree->getRegister(4);
-    
+
 	ASSERT_EQ(1, registerOneRecovered->getId());
 	ASSERT_EQ(2, registerTwoRecovered->getId());
 	ASSERT_EQ(3, registerThreeRecovered->getId());
@@ -53,7 +79,6 @@ TEST(treeTest, treeTest){
     return;
 
 }
-
 
 int main(int argc, char *argv[])
 {

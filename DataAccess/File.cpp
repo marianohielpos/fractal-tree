@@ -114,12 +114,12 @@ uint32_t File::getFreeSpaceDirection(){
 
 }
 
-Node* File::getNode(uint32_t offset){
+Node* File::getNode(uint32_t number){
     this->openFile.clear();
 
     char memblock[this->blockSize];
 
-    this->getBlock(offset, memblock);
+    this->getBlock(number, memblock);
 
     Node* node = this->factory.buildNode(memblock);
 
@@ -162,14 +162,14 @@ uint32_t File::saveNode(Node* node){
 
 
 
-bool File::saveNode(Node* node, uint32_t offset){
+bool File::saveNode(Node* node, uint32_t number){
 
     this->openFile.clear();
     if( node->getSize() > this->blockSize ){
         return false;
     }
 
-    uint32_t blockPosition = offset * this->blockSize;
+    uint32_t blockPosition = number * this->blockSize;
 
     this->openFile.seekg(blockPosition);
 
@@ -213,9 +213,9 @@ bool File::setControlPosition(uint32_t positionInControlZone, bool setToCero){
     return true;
 }
 
-bool File::deleteNode(uint32_t blockNumber){
-    std::cout << "Deleting node " << blockNumber << std::endl;
-    this->setControlPosition(blockNumber - 1, true);
-    this->setToCeroSector(blockNumber);
+bool File::deleteNode(uint32_t number){
+    std::cout << "Deleting node " << number << std::endl;
+    this->setControlPosition(number - 1, true);
+    this->setToCeroSector(number);
     return true;
 }

@@ -1,1 +1,1 @@
-valgrind --leak-check=yes ./persistanceTest
+valgrind --leak-check=yes ./treeTest
