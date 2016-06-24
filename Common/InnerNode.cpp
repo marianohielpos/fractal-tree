@@ -14,13 +14,16 @@ void InnerNode::insertReference(uint32_t nodeId, uint32_t offset){
     this->references[nodeId] = offset;
 }
 
+std::map <uint32_t,uint32_t>* InnerNode::getReferences(){
+    return &this->references;
+}
 
 uint32_t InnerNode::getNumberOfReferences(){
     return this->references.size();
 }
 
 uint32_t InnerNode::getDirection(uint32_t nodeId){
-    std::map<uint32_t, uint32_t>::iterator it = this->references.lower_bound(nodeId);
+    std::map<uint32_t, uint32_t>::const_iterator it = this->references.lower_bound(nodeId);
 
     if( it == this->references.end()){
         it--;

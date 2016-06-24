@@ -17,7 +17,7 @@ public:
 
     Register* getRegister(uint32_t id);
 
-    void removeRegister(uint32_t id);
+    bool removeRegister(uint32_t id);
 
     bool insertRegister(Register* _register);
 

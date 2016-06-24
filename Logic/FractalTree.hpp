@@ -15,11 +15,9 @@ public:
 
 	Register* getRegister(uint32_t id);
 
-	Register* getRegister(uint32_t id, uint32_t nodePlace, uint32_t level);
+	void showAll();
 
 	bool setRegister(Register* _register);
-
-	bool setRegister(Register* _register, uint32_t nodePlace, uint32_t level);
 
 	bool deleteRegister(uint32_t id);
 
@@ -30,6 +28,14 @@ public:
 protected:
 
 private:
+
+	bool deleteRegister(uint32_t id, uint32_t nodePlace, uint32_t level);
+
+	void showAll(uint32_t nodePlace);
+
+	bool setRegister(Register* _register, uint32_t nodePlace, uint32_t level);
+
+	Register* getRegister(uint32_t id, uint32_t nodePlace, uint32_t level);
 
 	std::vector<LeafNode> splitNode(LeafNode* node);
 

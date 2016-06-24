@@ -21,6 +21,8 @@ public:
 
     uint32_t getDirection(uint32_t nodeId);
 
+    std::map <uint32_t,uint32_t>* getReferences();
+
     bool getStream(char* buffer, uint32_t size);
 
     uint32_t getNumberOfReferences();

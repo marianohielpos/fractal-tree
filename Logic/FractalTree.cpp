@@ -9,6 +9,7 @@
 #include <fstream>
 #include <string.h>
 #include <memory>
+#include <math.h>
 
 
 #define PATH ./test.bin
@@ -32,25 +33,31 @@ Register* FractalTree::getRegister(uint32_t id, uint32_t nodePlace, uint32_t lev
 	switch (node->getType()) {
 		case 0:
 		std::cout << ((InnerNode*)node.get())->getDirection(id) << std::endl;
+		std::cout << id << std::endl;
 			return this->getRegister(id, ((InnerNode*)node.get())->getDirection(id), level++);
 		case 1:
-			return ((LeafNode*)node.get())->getRegister(id);
+			return new Register(*((LeafNode*)node.get())->getRegister(id));
 	}
 	return NULL;
 }
 
 bool FractalTree::deleteRegister(uint32_t id){
-	Node* node = this->file->getNode(1);
+	return this->deleteRegister(id, 1, 1);
+}
+
+bool FractalTree::deleteRegister(uint32_t id, uint32_t nodePlace, uint32_t level){
+	std::unique_ptr<Node> node(this->file->getNode(nodePlace));
 	switch (node->getType()) {
 		case 0:
-			//TODO return this->getRegister(id, ((InnerNode*)node)->getDirection(id), 1, 1);
+			return this->deleteRegister(id, ((InnerNode*)node.get())->getDirection(id), level++);
 		case 1:
 			std::cout << "Deleting register" << std::endl;
-			((LeafNode*)node)->removeRegister(id);
-			if( !this->file->saveNode(node, 1)){
-				std::cout << "Warning error" << std::endl;
+			if(((LeafNode*)node.get())->removeRegister(id)){
+				this->file->saveNode(node.get(), nodePlace);
+				return true;
 			}
-			return true;
+			return false;
+
 	}
 	return false;
 }
@@ -125,7 +132,10 @@ bool FractalTree::split(Register* _register, Node* node, std::stack<NodeContaine
 
 	InnerNode* innerNode = nodeContainer.getNode();
 
-	if( innerNode->getNumberOfReferences() == (2 ^ level)){
+	std::cout << "\t\tNumber of refenrences " << innerNode->getNumberOfReferences() << std::endl;
+	std::cout << "\t\tNode level " << level << std::endl;
+
+	if( innerNode->getNumberOfReferences() == (pow(2, level))){
 		InnerNode newInnerNode = InnerNode();
 		newInnerNode.insertReference(v[0].getMin(), placeOne);
 		newInnerNode.insertReference(v[1].getMin(), placeTwo);
@@ -171,4 +181,37 @@ std::vector<LeafNode> FractalTree::splitNode(LeafNode* node){
 	v.push_back(leafNodeTwo);
 
 	return v;
+}
+
+
+void FractalTree::showAll(){
+	return this->showAll(1);
+}
+
+
+void FractalTree::showAll(uint32_t nodePlace){
+	std::unique_ptr<Node> node(this->file->getNode(nodePlace));
+
+	switch (node->getType()) {
+		case 0:
+			{
+				std::cout << "Enter in case 0" << std::endl;
+				std::map<uint32_t,uint32_t>::const_iterator iter = ((InnerNode*)node.get())->getReferences()->begin();
+
+		    	for (; iter != ((InnerNode*)node.get())->getReferences()->end(); iter++){
+						std::cout << "tree reference: " << iter->first << "-" << iter->second << std::endl;
+						this->showAll(iter->second);
+				}
+				break;
+			}
+		case 1:
+			std::map<uint32_t,Register>::iterator iterator = node->getRegisters()->begin();
+
+			for (; iterator != node->getRegisters()->end(); ++iterator){
+				std::cout << "ID: " << iterator->second.getId() << std::endl;
+				std::cout << "description: " << iterator->second.getDescription() << std::endl;
+				std::cout << "Code: " << iterator->second.getCode() << std::endl;
+			}
+			break;
+	}
 }

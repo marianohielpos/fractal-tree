@@ -12,8 +12,12 @@ Register* Node::getRegister(uint32_t id){
     return &this->registers.lower_bound(id)->second;
 }
 
-void Node::removeRegister(uint32_t id){
+bool Node::removeRegister(uint32_t id){
+    if( this->registers.find(id) == this->registers.end() ){
+        return false;
+    }
     this->registers.erase(id);
+    return true;
 }
 
 bool Node::insertRegister(Register* _register){

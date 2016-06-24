@@ -10,6 +10,40 @@
 
 
 #define PATH "./test.bin"
+
+/*
+
+TEST(treeTest, deleteTest){
+    std::cout << "Starting \n";
+    FractalTree* fractalTree = new FractalTree(PATH);
+
+    char* codeOne = (char*)"111";
+
+    char* descriptionOne = (char*)"descriptionOne";
+
+
+    std::cout << "Creating registerss \n";
+
+
+    for(uint32_t i = 1; i < 10; i++){
+        std::cout << "Inserting node " << i << std::endl;
+        Register registerOne =  Register(i, codeOne, descriptionOne);
+        fractalTree->setRegister(&registerOne);
+    }
+
+    ASSERT_EQ(true, fractalTree->deleteRegister(4));
+    ASSERT_EQ(false, fractalTree->deleteRegister(4));
+    ASSERT_EQ(true, fractalTree->deleteRegister(5));
+    ASSERT_EQ(false, fractalTree->deleteRegister(1234));
+
+
+    delete fractalTree;
+    return;
+
+}
+
+*/
+
 TEST(treeTest, amountTest){
     std::cout << "Starting \n";
     FractalTree* fractalTree = new FractalTree(PATH);
@@ -22,7 +56,7 @@ TEST(treeTest, amountTest){
     std::cout << "Creating registerss \n";
 
 
-    for(uint32_t i = 1; i < 1000; i++){
+    for(uint32_t i = 1; i < 500; i++){
         std::cout << "Inserting node " << i << std::endl;
         Register registerOne =  Register(i, codeOne, descriptionOne);
         fractalTree->setRegister(&registerOne);
@@ -65,10 +99,10 @@ TEST(treeTest, treeTest){
 	fractalTree->setRegister(&registerThree);
 	fractalTree->setRegister(&registerFour);
 
-	Register* registerOneRecovered = fractalTree->getRegister(1);
-	Register* registerTwoRecovered = fractalTree->getRegister(2);
-	Register* registerThreeRecovered = fractalTree->getRegister(3);
-	Register* registerFourRecovered = fractalTree->getRegister(4);
+    std::unique_ptr<Register> registerOneRecovered(fractalTree->getRegister(1));
+	std::unique_ptr<Register> registerTwoRecovered(fractalTree->getRegister(2));
+	std::unique_ptr<Register> registerThreeRecovered(fractalTree->getRegister(3));
+	std::unique_ptr<Register> registerFourRecovered(fractalTree->getRegister(4));
 
 	ASSERT_EQ(1, registerOneRecovered->getId());
 	ASSERT_EQ(2, registerTwoRecovered->getId());
@@ -87,4 +121,6 @@ int main(int argc, char *argv[])
     ::testing::InitGoogleTest(&argc, argv);
 
     return RUN_ALL_TESTS();
+
+    return 0;
 }
