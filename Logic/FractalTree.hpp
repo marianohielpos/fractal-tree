@@ -25,13 +25,19 @@ public:
 
 	FractalTree(const char* path);
 
+	~FractalTree();
+
 protected:
 
 private:
 
 	std::vector<LeafNode> splitNode(LeafNode* node);
 
+	bool split(Register* _register, Node* node, std::stack<NodeContainer> *nodes, uint32_t nodePlace, uint32_t level);
+
 	File* file;
+
+	bool free(std::stack<Node*>* nodesToFree);
 
 };
 

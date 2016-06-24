@@ -28,6 +28,7 @@ TEST(treeTest, amountTest){
         fractalTree->setRegister(&registerOne);
         Register* registerOneRecovered = fractalTree->getRegister(i);
         ASSERT_EQ(i, registerOneRecovered->getId());
+        delete registerOneRecovered;
     }
 
 
