@@ -21,6 +21,7 @@ int main(int argc, char *argv[]){
         ("set", "Set a register, must have id, code and description")
         ("get", "Retrive a register, id must be handled")
         ("delete", "Delete a register, id must be handled")
+        ("showAll", "Show all registers")
         ("id", po::value<uint32_t>(), "The register id")
         ("code", po::value<std::string>(), "The register code")
         ("description", po::value<std::string>(), "The register description")
@@ -60,7 +61,10 @@ int main(int argc, char *argv[]){
             return 0;
         }
         std::cout << "Not found" << std::endl;
+    } else if(vm.count("showAll")){
+        fractalTree->showAll();
     }  else{
+
         std::cout << "Invalid option" << std::endl;
     }
 
