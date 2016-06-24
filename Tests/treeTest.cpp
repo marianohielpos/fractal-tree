@@ -2,6 +2,7 @@
 #include "../Common/InnerNode.hpp"
 #include "../Common/LeafNode.hpp"
 #include "../Common/Node.hpp"
+#include "../Common/Register.hpp"
 #include "../DataAccess/File.hpp"
 #include <iostream>
 #include <string>

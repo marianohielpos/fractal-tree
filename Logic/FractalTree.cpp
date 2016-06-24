@@ -11,8 +11,6 @@
 #include <memory>
 #include <math.h>
 
-
-#define PATH ./test.bin
 #define BLOCK_SIZE 4096
 
 FractalTree::FractalTree(const char* pathToFile){
