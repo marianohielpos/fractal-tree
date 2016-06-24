@@ -11,8 +11,6 @@
 
 #define PATH "./test.bin"
 
-/*
-
 TEST(treeTest, deleteTest){
     std::cout << "Starting \n";
     FractalTree* fractalTree = new FractalTree(PATH);
@@ -42,7 +40,6 @@ TEST(treeTest, deleteTest){
 
 }
 
-*/
 
 TEST(treeTest, amountTest){
     std::cout << "Starting \n";
@@ -56,7 +53,7 @@ TEST(treeTest, amountTest){
     std::cout << "Creating registerss \n";
 
 
-    for(uint32_t i = 1; i < 500; i++){
+    for(uint32_t i = 1; i < 1000; i++){
         std::cout << "Inserting node " << i << std::endl;
         Register registerOne =  Register(i, codeOne, descriptionOne);
         fractalTree->setRegister(&registerOne);

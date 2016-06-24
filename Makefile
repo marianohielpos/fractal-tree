@@ -18,6 +18,8 @@ UTILS_BIN = $(wildcard $(UTILS_PATH)*.cpp)
 
 all: main
 
+main:
+
 persistance:
 	$(CC) $(CFLAGS) -c $(DATA_ACCESS_BIN)
 
@@ -28,14 +30,14 @@ logic:
 	$(CC) $(CFLAGS) -c $(LOGIC_BIN)
 
 
-testTree: common persistance logic
+treeTest: common persistance logic
 	$(CC) $(CFLAGS) $(BINFILES) $(TESTS_PATH)$(TREE_TEST_EXEC).cpp -o $(TREE_TEST_EXEC) -lgtest -lgtest_main
 
-testPersistance: common persistance
+persistanceTest: common persistance
 	$(CC) $(CFLAGS) $(BINFILES) $(TESTS_PATH)$(PERSITANCE_TEST_EXEC).cpp -o $(PERSITANCE_TEST_EXEC) -lgtest -lgtest_main
 
 
-testRegister: common
+registerTest: common
 	$(CC) $(CFLAGS) $(BINFILES) $(TESTS_PATH)$(REGISTER_TEST_EXEC).cpp -o $(REGISTER_TEST_EXEC) -lgtest -lgtest_main
 
 .PHONY: clean main

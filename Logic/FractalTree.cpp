@@ -71,22 +71,20 @@ bool FractalTree::setRegister(Register* _register, uint32_t nodePlace, uint32_t 
 
 	std::stack<NodeContainer> nodes;
 	std::stack<Node*> nodesToFree;
-	Node* node = NULL;
 
 	while (true) {
-		node = this->file->getNode(nodePlace);
-		nodesToFree.push(node);
-		switch (node->getType()) {
+		nodesToFree.push(this->file->getNode(nodePlace));
+		switch (nodesToFree.top()->getType()) {
 			case 0:
-				nodes.push(NodeContainer((InnerNode*)node, nodePlace));
-				nodePlace = ((InnerNode*)node)->getDirection(_register->getId());
+				nodes.push(NodeContainer((InnerNode*)nodesToFree.top(), nodePlace));
+				nodePlace = ((InnerNode*)nodesToFree.top())->getDirection(_register->getId());
 				std::cout << "Direction: " << nodePlace << std::endl;
 				break;
 			case 1:
 				std::cout << "Saving register" << std::endl;
-				((LeafNode*)node)->insertRegister(_register);
-				if( !this->file->saveNode(node, nodePlace)){
-					this->split(_register, node, &nodes, nodePlace, level);
+				((LeafNode*)nodesToFree.top())->insertRegister(_register);
+				if( !this->file->saveNode(nodesToFree.top(), nodePlace)){
+					this->split(_register, nodesToFree.top(), &nodes, nodePlace, level);
 				}
 				this->free(&nodesToFree);
 				return true;
