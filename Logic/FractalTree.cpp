@@ -50,6 +50,12 @@ bool FractalTree::deleteRegister(uint32_t id){
 
 bool FractalTree::deleteRegister(uint32_t id, uint32_t nodePlace, uint32_t level){
 	std::unique_ptr<Node> node(this->file->getNode(nodePlace));
+	if( node->exists(id) ){
+		std::cout << "register found in buffer" << std::endl;
+		node->removeRegister(id);
+		this->file->saveNode(node.get(), nodePlace);
+		return true;
+	}
 	switch (node->getType()) {
 		case 0:
 			return this->deleteRegister(id, ((InnerNode*)node.get())->getDirection(id), level++);
