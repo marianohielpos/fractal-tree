@@ -3,6 +3,11 @@
 #include <cstring>
 #include <iostream>
 
+bool Node::removeRegisters(){
+    std::map <uint32_t,Register> registers;
+    this->registers = registers;
+    return true;
+}
 
 std::map<uint32_t,Register>* Node::getRegisters(void){
     return &this->registers;
@@ -10,6 +15,13 @@ std::map<uint32_t,Register>* Node::getRegisters(void){
 
 Register* Node::getRegister(uint32_t id){
     return &this->registers.lower_bound(id)->second;
+}
+
+bool Node::exists(uint32_t id){
+    if( this->registers.find(id) == this->registers.end() ){
+        return false;
+    }
+    return true;
 }
 
 bool Node::removeRegister(uint32_t id){
@@ -37,7 +49,7 @@ void Node::serializeRegisters(char* buffer){
     std::cout << "serializeRegisters" << std::endl;
     std::cout << "Number of registers " << numberOfRegisters << std::endl;
 
-    memcpy(buffer + offset, &numberOfRegisters, sizeof(numberOfRegisters));
+    memcpy(buffer, &numberOfRegisters, sizeof(numberOfRegisters));
 
     offset += sizeof(numberOfRegisters);
 
@@ -65,6 +77,8 @@ void Node::deSerializeRegisters(const char* byteStream){
     for(uint32_t j = 0; j < numberOfRegisters; j++ ){
 
         Register _register = Register(&byteStream[offset]);
+
+        std::cout << "Register id: " << _register.getId() << std::endl;
 
         offset += _register.getSize();
 

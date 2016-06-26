@@ -19,6 +19,10 @@ public:
 
     bool removeRegister(uint32_t id);
 
+    bool removeRegisters();
+
+    bool exists(uint32_t id);
+
     bool insertRegister(Register* _register);
 
     virtual bool getStream(char* buffer, uint32_t size) = 0;

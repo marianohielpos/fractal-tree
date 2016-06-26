@@ -84,11 +84,7 @@ bool InnerNode::getStream(char* buffer, uint32_t size){
 
     }
 
-    memcpy(buffer + offset, &nullChar, sizeof(char));
-    //Plus null character
-    offset += 1;
-
-    //this->serializeRegisters(buffer + offset);
+    this->serializeRegisters(buffer + offset);
 
     return true;
 
@@ -99,8 +95,8 @@ uint32_t InnerNode::getSize(){
 
     //Type of node
     size += 1;
-    //Space occupied for the whole
-    size += 4;
+    //Space occupied for the size of registers and references
+    size += 8;
     //References plus null character
     size += this->references.size()*8 + 1;
     //Buffers
@@ -150,5 +146,5 @@ InnerNode::InnerNode(const char* byteStream)
         this->references[key] = value;
     }
 
-    //this->deSerializeRegisters(byteStream + offset);
+    this->deSerializeRegisters(byteStream + offset);
 }

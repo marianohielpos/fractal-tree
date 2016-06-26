@@ -33,14 +33,13 @@ private:
 
 	void showAll(uint32_t nodePlace);
 
-	bool setRegister(Register* _register, uint32_t nodePlace, uint32_t level);
+	bool setRegister(Register* _register, uint32_t nodePlace, uint32_t level, NodeContainer* upperNode);
 
 	Register* getRegister(uint32_t id, uint32_t nodePlace, uint32_t level);
 
 	std::vector<LeafNode> splitNode(LeafNode* node);
 
-	bool split(Register* _register, Node* node, std::stack<NodeContainer> *nodes, uint32_t nodePlace, uint32_t level);
-
+	bool split(Register* _register, Node* node, NodeContainer* nodeContainer, uint32_t nodePlace, uint32_t level);
 	File* file;
 
 	bool free(std::stack<Node*>* nodesToFree);

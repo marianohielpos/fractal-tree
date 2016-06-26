@@ -28,10 +28,15 @@ Register* FractalTree::getRegister(uint32_t id){
 Register* FractalTree::getRegister(uint32_t id, uint32_t nodePlace, uint32_t level){
 	std::cout << "nodePlace " << nodePlace << std::endl;
 	std::unique_ptr<Node> node(this->file->getNode(nodePlace));
+	std::cout << "check if register is in buffer" << std::endl;
+	if( node->exists(id) ){
+		std::cout << "register found in buffer" << std::endl;
+		return new Register(*(node->getRegister(id)));
+	}
 	switch (node->getType()) {
 		case 0:
-		std::cout << ((InnerNode*)node.get())->getDirection(id) << std::endl;
-		std::cout << id << std::endl;
+			std::cout << ((InnerNode*)node.get())->getDirection(id) << std::endl;
+			std::cout << id << std::endl;
 			return this->getRegister(id, ((InnerNode*)node.get())->getDirection(id), level++);
 		case 1:
 			return new Register(*((LeafNode*)node.get())->getRegister(id));
@@ -62,48 +67,45 @@ bool FractalTree::deleteRegister(uint32_t id, uint32_t nodePlace, uint32_t level
 
 
 bool FractalTree::setRegister(Register* _register){
-	return this->setRegister(_register, 1, 1);
+	return this->setRegister(_register, 1, 1, NULL);
 }
 
-bool FractalTree::setRegister(Register* _register, uint32_t nodePlace, uint32_t level){
+bool FractalTree::setRegister(Register* _register, uint32_t nodePlace, uint32_t level, NodeContainer* upperNode){
 
-	std::stack<NodeContainer> nodes;
-	std::stack<Node*> nodesToFree;
+	std::unique_ptr<Node> node(this->file->getNode(nodePlace));
+	node->insertRegister(_register);
 
-	while (true) {
-		nodesToFree.push(this->file->getNode(nodePlace));
-		switch (nodesToFree.top()->getType()) {
-			case 0:
-				nodes.push(NodeContainer((InnerNode*)nodesToFree.top(), nodePlace));
-				nodePlace = ((InnerNode*)nodesToFree.top())->getDirection(_register->getId());
-				std::cout << "Direction: " << nodePlace << std::endl;
-				break;
-			case 1:
-				std::cout << "Saving register" << std::endl;
-				((LeafNode*)nodesToFree.top())->insertRegister(_register);
-				if( !this->file->saveNode(nodesToFree.top(), nodePlace)){
-					this->split(_register, nodesToFree.top(), &nodes, nodePlace, level);
+	switch (node->getType()) {
+		case 0:
+			if( !this->file->saveNode(node.get(), nodePlace)){
+				NodeContainer nodeContainer = NodeContainer((InnerNode*)node.get(), nodePlace);
+				std::map<uint32_t,Register>::iterator iter = node->getRegisters()->begin();
+
+				for (; iter != node->getRegisters()->end(); iter++){
+					this->setRegister(&iter->second, ((InnerNode*)node.get())->getDirection(iter->second.getId()), level + 1, &nodeContainer);
 				}
-				this->free(&nodesToFree);
+
+				node->removeRegisters();
+
+				this->file->saveNode(node.get(), nodePlace);
+
 				return true;
-		}
 
-		level++;
-
+			} else {
+				return true;
+			}
+		case 1:
+			std::cout << "Saving register" << std::endl;
+			if( !this->file->saveNode(node.get(), nodePlace)){
+				this->split(_register, node.get(), upperNode, nodePlace, level);
+			}
+			return true;
 	}
 
 	return true;
 }
 
-bool FractalTree::free(std::stack<Node*>* nodesToFree){
-	while ( !nodesToFree->empty()) {
-		delete nodesToFree->top();
-		nodesToFree->pop();
-	}
-	return true;
-}
-
-bool FractalTree::split(Register* _register, Node* node, std::stack<NodeContainer> *nodes, uint32_t nodePlace, uint32_t level){
+bool FractalTree::split(Register* _register, Node* node, NodeContainer* nodeContainer, uint32_t nodePlace, uint32_t level){
 	std::vector<LeafNode> v = this->splitNode((LeafNode*)node);
 
 	uint32_t placeOne = this->file->saveNode(&v[0]);
@@ -114,7 +116,7 @@ bool FractalTree::split(Register* _register, Node* node, std::stack<NodeContaine
 	}
 
 
-	if( nodes->empty() ){
+	if( nodeContainer == NULL ){
 		this->file->deleteNode(nodePlace);
 		InnerNode newInnerNode = InnerNode();
 		newInnerNode.insertReference(v[0].getMin(), placeOne);
@@ -123,10 +125,7 @@ bool FractalTree::split(Register* _register, Node* node, std::stack<NodeContaine
 		return true;
 	}
 
-	NodeContainer nodeContainer = nodes->top();
-	nodes->pop();
-
-	InnerNode* innerNode = nodeContainer.getNode();
+	InnerNode* innerNode = nodeContainer->getNode();
 
 	std::cout << "\t\tNumber of refenrences " << innerNode->getNumberOfReferences() << std::endl;
 	std::cout << "\t\tNode level " << level << std::endl;
@@ -142,8 +141,8 @@ bool FractalTree::split(Register* _register, Node* node, std::stack<NodeContaine
 		innerNode->insertReference(v[1].getMin(), placeTwo);
 	}
 
-	std::cout << "Saving node in " << nodeContainer.getPlace() << std::endl;
-	this->file->saveNode(innerNode, nodeContainer.getPlace());
+	std::cout << "Saving node in " << nodeContainer->getPlace() << std::endl;
+	this->file->saveNode(innerNode, nodeContainer->getPlace());
 
 	return true;
 
